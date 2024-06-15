@@ -9,7 +9,7 @@ export default function Page() {
 		<View style={styles.container}>
 			<View style={styles.main}>
 				<SamsaraWheel
-					selected_services={["Netflix", "Disney+", "Hulu"]}
+					input_services={["Netflix", "Disney+", "Hulu", "Prime", "HBO"]}
 					end_period={end_period}
 				/>
 			</View>

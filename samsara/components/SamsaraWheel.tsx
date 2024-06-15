@@ -14,6 +14,7 @@ import Svg, {
 import { Line, VictoryPie } from "victory-native";
 import { services } from "@/constants/services";
 import DateLine from "@/components/DateLine";
+import EditComponents from "@/components/EditComponents";
 
 interface Service {
 	id: number;
@@ -28,27 +29,31 @@ interface DataItem {
 }
 
 const SamsaraWheel: React.FC<{
-	selected_services: string[];
+	input_services: string[];
 	end_period: Date;
-}> = ({ selected_services, end_period }) => {
+}> = ({ input_services, end_period }) => {
 	const today = new Date();
 	const dimensions = Dimensions.get("window");
 	const radius = dimensions.width / 4;
-
+	const init_edit = true;
 	const calendarSource = require("../assets/images/calendar.png"); // Adjust path if necessary
+	const graphicData: DataItem[] = [];
 
-	let sections: Service[] = Object.values(services).filter((service) =>
-		selected_services.includes(service.name)
+	const [editMode, setEditMode] = useState(init_edit);
+	const [selected_services, setSelected_services] = useState(input_services);
+
+	let streaming_services: Service[] = Object.values(services).filter(
+		(service) => selected_services.includes(service.name)
 	);
 
-	const graphicData = [];
-	for (let i = 0; i < sections.length; i++) {
+	for (let i = 0; i < streaming_services.length; i++) {
 		graphicData.push({
-			y: 100 / sections.length,
-			x: sections[i].name,
+			y: 100 / streaming_services.length,
+			x: streaming_services[i].name,
 			selected: false,
 		});
 	}
+
 	const [data, setData] = useState(graphicData);
 
 	function sectionSelection(name: string) {
@@ -68,55 +73,64 @@ const SamsaraWheel: React.FC<{
 	}
 
 	function getSectionAngle() {
-		const sectiondegree = 360 / sections.length;
-		const timedifference = Math.ceil(30-
-			(end_period.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+		const sectiondegree = 360 / streaming_services.length;
+		const timedifference = Math.ceil(
+			30 - (end_period.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
 		);
-		return (sectiondegree * timedifference)/32;
+		return (sectiondegree * timedifference) / 32;
 	}
 
-	const colorScale = sections.map((section) => section.color);
+	const colorScale = streaming_services.map((section) => section.color);
 
-	let tall = 0;
-	function testfunction() {
-		tall++;
-		console.log("test" + tall);
+	function toggleEdit() {
+		setEditMode(!editMode);
 	}
 
 	return (
-		<View style={styles.frame}>
+		<View style={styles.container}>
 			<View style={styles.container}>
-				<VictoryPie
-					key={data.map((datum) => datum.selected).join(",")}
-					data={data}
-					width={2 * radius}
-					height={2 * radius}
-					innerRadius={({ datum }) => radius * 0.8 + (datum.selected ? 10 : 0)}
-					style={{
-						labels: {
-							fill: ({ datum }: { datum: DataItem }) =>
-								datum.selected ? "white" : "none",
-							fontSize: 15,
-							padding: 7,
-						} as any,
-					}}
-					colorScale={colorScale}
-					padAngle={3}
-					events={[
-						{
-							target: "data",
-							eventHandlers: {
-								onPress: (event, props) => {
-									sectionSelection(props.datum.x);
+				{editMode && (
+					<View style={styles.container}>
+						<EditComponents
+							Radius={radius}
+							service_usestate={[selected_services, setSelected_services]}
+						/>
+					</View>
+				)}
+				<View style={styles.container}>
+					<VictoryPie
+						key={data.map((datum) => datum.selected).join(",")}
+						data={data}
+						width={2 * radius}
+						height={2 * radius}
+						innerRadius={({ datum }) =>
+							radius * 0.8 + (datum.selected ? 10 : 0)
+						}
+						style={{
+							labels: {
+								fill: ({ datum }: { datum: DataItem }) =>
+									datum.selected ? "white" : "none",
+								fontSize: 15,
+								padding: 7,
+							} as any,
+						}}
+						colorScale={colorScale}
+						padAngle={3}
+						events={[
+							{
+								target: "data",
+								eventHandlers: {
+									onPress: (event, props) => {
+										sectionSelection(props.datum.x);
+									},
 								},
 							},
-						},
-					]}
-				/>
-				<Svg style={styles.svg_container}>
-					<DateLine radius={radius} angle={getSectionAngle()} />
-				</Svg>
-				<Pressable onPress={testfunction} style={{ position: "absolute"}}>
+						]}
+					/>
+					<Svg style={styles.svg_container}>
+						<DateLine radius={radius} angle={getSectionAngle()} />
+					</Svg>
+					<Pressable onPress={toggleEdit} style={{ position: "absolute" }}>
 						<Image
 							source={calendarSource}
 							style={{
@@ -126,6 +140,7 @@ const SamsaraWheel: React.FC<{
 							resizeMode='contain' // Maintain aspect ratio
 						/>
 					</Pressable>
+				</View>
 			</View>
 		</View>
 	);
@@ -138,6 +153,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	container: {
+		position: "absolute",
 		justifyContent: "center",
 		alignItems: "center",
 		width: "auto",

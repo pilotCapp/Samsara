@@ -14,7 +14,7 @@ const DateLine: React.FC<{ radius: number; angle: number }> = ({
 	const y2 = radius + radius * 0.8 * Math.sin(angleInRadians);
 
 	return (
-		<G style={{ position: "relative", backgroundColor: "black" }}>
+		<G>
 			<Line
 				pointerEvents='none'
 				x1={x1}
