@@ -1,13 +1,15 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import Svg, { G, Circle } from "react-native-svg";
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
+import Svg, { G, Circle, Defs } from "react-native-svg";
+import { Line } from "victory-native";
 
 const EditComponents: React.FC<{
 	Radius: number;
 	service_usestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
 }> = ({ Radius, service_usestate }) => {
+	Radius = Radius * 1;
 	const smallRadius = Radius / 10;
-	const [selected_services, setSelected_services] = service_usestate;
+	let [selected_services, setSelected_services] = service_usestate;
 
 	// Helper function to calculate position
 	const calculatePosition = (angle: number, radius: number) => {
@@ -30,28 +32,93 @@ const EditComponents: React.FC<{
 		}
 	);
 
+	const CurrentPeriodAlert = (callback: Function) => {
+		Alert.alert(
+			"Warning",
+			"Do you wish to skip current period?",
+			[
+				{
+					text: "Cancel",
+					onPress: () => callback(false),
+					style: "cancel",
+				},
+				{
+					text: "OK",
+					onPress: () => callback(true),
+				},
+			],
+			{ cancelable: false }
+		);
+	};
+
+	function handlePress(index: number) {
+		console.log("Pressed: ", index);
+		if (index == 0) {
+			CurrentPeriodAlert((response: boolean) => {
+				if (response) {
+					const new_services = selected_services.filter(
+						(item) => item !== selected_services[index]
+					);
+					setSelected_services(new_services);
+				}
+			});
+		} else {
+			const new_services = selected_services.filter(
+				(item) => item !== selected_services[index]
+			);
+			setSelected_services(new_services);
+		}
+	}
+
+	useEffect(() => {
+		console.log("Selected services component: ", selected_services);
+	}, [selected_services]);
 	return (
 		<View style={styles.container}>
-			<Svg height={Radius * 3} width={Radius * 3}>
-				<G>
-					{smallCirclePositions.map(
-						(pos, index) => (
-							console.log(pos),
-							(
-								<Circle
-									key={index}
-									cx={pos.x}
-									cy={pos.y}
-									r={smallRadius}
-									stroke='black'
-									strokeWidth='2'
-									fill='red'
-								/>
-							)
-						)
-					)}
-				</G>
-			</Svg>
+			<View
+				height={Radius * 3}
+				width={Radius * 3}
+				style={{
+					shadowOffset: {
+						width: 0,
+						height: 3,
+					},
+					shadowOpacity: 0.5,
+					shadowRadius: 5,
+					position: "absolute",
+					pointerEvents: "box-none",
+				}}>
+				{selected_services.map((service, index) => (
+					<Pressable
+						key={service}
+						onPress={() => {
+							handlePress(index);
+						}}
+						style={{
+							position: "absolute",
+							left: smallCirclePositions[index].x - smallRadius,
+							top: smallCirclePositions[index].y - smallRadius,
+							width: smallRadius * 2,
+							height: smallRadius * 2,
+							justifyContent: "center",
+							alignItems: "center",
+							backgroundColor: "white",
+							borderRadius: smallRadius,
+							borderColor: "black",
+						}}>
+						<View
+							style={{
+								backgroundColor: "black",
+								height: smallRadius / 5,
+								width: smallRadius,
+								borderRadius: smallRadius / 2,
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						/>
+					</Pressable>
+				))}
+			</View>
 		</View>
 	);
 };
@@ -61,12 +128,14 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		justifyContent: "center",
 		alignItems: "center",
+		pointerEvents: "box-none",
 	},
 	svg_container: {
 		height: "100%",
 		width: "100%",
 		justifyContent: "center",
 		alignItems: "center",
+		pointerEvents: "box-none",
 	},
 });
 

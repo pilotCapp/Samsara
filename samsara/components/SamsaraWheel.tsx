@@ -1,5 +1,13 @@
-import { View, Pressable, StyleSheet, Dimensions, Image } from "react-native";
-import React, { useState } from "react";
+import {
+	View,
+	Pressable,
+	StyleSheet,
+	Dimensions,
+	Image,
+	Animated,
+	Button,
+} from "react-native";
+import React, { useState, useEffect, useRef } from "react";
 
 import { ThemedText } from "@/components/ThemedText";
 import { transform } from "@babel/core";
@@ -11,7 +19,7 @@ import Svg, {
 	Circle,
 } from "react-native-svg";
 
-import { Line, VictoryPie } from "victory-native";
+import { Line, VictoryPie, VictoryContainer } from "victory-native";
 import { services } from "@/constants/services";
 import DateLine from "@/components/DateLine";
 import EditComponents from "@/components/EditComponents";
@@ -35,26 +43,47 @@ const SamsaraWheel: React.FC<{
 	const today = new Date();
 	const dimensions = Dimensions.get("window");
 	const radius = dimensions.width / 4;
-	const init_edit = true;
+	const init_edit = false;
 	const calendarSource = require("../assets/images/calendar.png"); // Adjust path if necessary
-	const graphicData: DataItem[] = [];
+	let graphicData: DataItem[] = [];
 
 	const [editMode, setEditMode] = useState(init_edit);
 	const [selected_services, setSelected_services] = useState(input_services);
+	const [data, setData] = useState(graphicData);
 
-	let streaming_services: Service[] = Object.values(services).filter(
-		(service) => selected_services.includes(service.name)
+	const [streaming_services, setStreaming_services] = useState<Service[]>(
+		Object.values(services).filter((service) =>
+			selected_services.includes(service.name)
+		)
+	);
+	const [colorScale, setColorScale] = useState(
+		streaming_services.map((section) => section.color)
 	);
 
-	for (let i = 0; i < streaming_services.length; i++) {
-		graphicData.push({
-			y: 100 / streaming_services.length,
-			x: streaming_services[i].name,
-			selected: false,
-		});
-	}
+	useEffect(() => {
+		setStreaming_services(
+			Object.values(services).filter((service) =>
+				selected_services.includes(service.name)
+			)
+		);
+	}, [selected_services]);
 
-	const [data, setData] = useState(graphicData);
+	useEffect(() => {
+		setColorScale(streaming_services.map((section) => section.color));
+
+		graphicData = [];
+
+		for (let i = 0; i < streaming_services.length; i++) {
+			graphicData.push({
+				y: 100 / streaming_services.length,
+				x: streaming_services[i].name,
+				selected: false,
+			});
+		}
+
+		console.log("resetting gaphic data: ", graphicData);
+		setData(graphicData);
+	}, [streaming_services]);
 
 	function sectionSelection(name: string) {
 		let newData: DataItem[] = [];
@@ -80,23 +109,28 @@ const SamsaraWheel: React.FC<{
 		return (sectiondegree * timedifference) / 32;
 	}
 
-	const colorScale = streaming_services.map((section) => section.color);
-
 	function toggleEdit() {
 		setEditMode(!editMode);
 	}
 
-	return (
+	const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity 0
+
+	useEffect(() => {
+		Animated.timing(fadeAnim, {
+			toValue: editMode ? 1 : 0, // Fade in if editMode is true, fade out otherwise
+			duration: 500, // Duration of the animation in ms
+			useNativeDriver: true, // Use native driver for better performance
+		}).start();
+	}, [editMode, fadeAnim]);
+
+	useEffect(() => {
+		//console.log("data is updated: ", selected_services);
+		//console.log("data is updated: ", data);
+	}, [data]);
+
+	return (	
 		<View style={styles.container}>
 			<View style={styles.container}>
-				{editMode && (
-					<View style={styles.container}>
-						<EditComponents
-							Radius={radius}
-							service_usestate={[selected_services, setSelected_services]}
-						/>
-					</View>
-				)}
 				<View style={styles.container}>
 					<VictoryPie
 						key={data.map((datum) => datum.selected).join(",")}
@@ -112,6 +146,7 @@ const SamsaraWheel: React.FC<{
 									datum.selected ? "white" : "none",
 								fontSize: 15,
 								padding: 7,
+								pointerEvents: "none",
 							} as any,
 						}}
 						colorScale={colorScale}
@@ -141,6 +176,26 @@ const SamsaraWheel: React.FC<{
 						/>
 					</Pressable>
 				</View>
+				<Animated.View
+					style={[
+						styles.container,
+						{
+							opacity: fadeAnim,
+							transform: [
+								{
+									scale: fadeAnim.interpolate({
+										inputRange: [0, 1],
+										outputRange: [0.7, 1],
+									}),
+								},
+							],
+						},
+					]}>
+					<EditComponents
+						Radius={radius}
+						service_usestate={[selected_services, setSelected_services]}
+					/>
+				</Animated.View>
 			</View>
 		</View>
 	);
@@ -157,6 +212,8 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		width: "auto",
+		pointerEvents: "box-none",
+		borderRadius: 100,
 	},
 	svg_container: {
 		position: "absolute",
@@ -164,6 +221,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		width: "100%",
 		height: "100%",
+		pointerEvents: "box-none",
+		borderRadius: 100,
 	},
 });
 
