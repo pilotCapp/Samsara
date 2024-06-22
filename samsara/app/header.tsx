@@ -9,7 +9,7 @@ const Header = ({ service_data }: { service_data: Service }) => {
 	return (
 		<LinearGradient
 			// Button Linear Gradient
-			locations={[0, 0.9, 1]}
+			locations={[0, 0.95, 1]}
 			colors={service_data.colors}
 			style={styles.container}>
 			<Text style={styles.title}>{service_data.name}</Text>
