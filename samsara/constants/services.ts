@@ -1,53 +1,49 @@
+import { Service } from '../types';
 
-export const services = {
+export const services:{[key: string]: Service} = {
     netflix: {
         id: 1,
         name: 'Netflix',
-        color: "#E50914",
+        colors: ["#FF0505","#C50404","#A80000"],
     },
     disney: {
         id: 2,
         name: 'Disney+',
-        color: "#001251",
+        colors: ["#001251","#234889","#3165C1"],
     },
     roku: {
         id: 3,
         name: 'Roku',
-        color: '#6f1ab1',
+        colors: ['#6f1ab1',"#4D008A","#210735"],
     },
     hulu: {
         id: 4,
         name: 'Hulu',
-        color: '#1ce783',
+        colors: ['#1CE783',"#00A755","#075A31"],
     },
     prime: {
         id: 5,
         name: 'Prime',
-        color: '#00a8e1',
+        colors: ['#00a8e1',"#1399FF","#0059AA"],
     },
     hbo: {
         id: 6,
         name: 'HBO',
-        color: '#000000',
+        colors: ['#2400FF',"#1800AC","#0F006C"],
     },
     apple: {
         id: 7,
         name: 'AppleTv',
-        color: '#000000',
+        colors: ['#D0D0D0',"#555555","#000000"],
     },
     youtube: {
         id: 8,
         name: 'Youtube',
-        color: '#ff0000',
-    },
-    discovery: {
-        id: 9,
-        name: 'Discovery+',
-        color: '#1575C5',
+        colors: ['#FF0000',"#b31217","#282828"],
     },
     paramount: {
         id: 10,
         name: 'Paramount+',
-        color: '#2864f0',
+        colors: ['#2864f0',"#11518a","#0D2C4D"],
     }
   };

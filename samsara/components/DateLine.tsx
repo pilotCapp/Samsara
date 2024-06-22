@@ -8,13 +8,13 @@ const DateLine: React.FC<{ radius: number; angle: number }> = ({
 	// Convert angle to radians
 	const angleInRadians = (angle - 90) * (Math.PI / 180);
 	// Calculate start and end points for the line
-	const x1 = radius + radius * 0.55 * Math.cos(angleInRadians);
-	const y1 = radius + radius * 0.55 * Math.sin(angleInRadians);
-	const x2 = radius + radius * 0.8 * Math.cos(angleInRadians); // Adjust the length of the line
-	const y2 = radius + radius * 0.8 * Math.sin(angleInRadians);
+	const x1 = radius*1.1 + radius * Math.cos(angleInRadians);
+	const y1 = radius*1.1 + radius * Math.sin(angleInRadians);
+	const x2 = radius*1.1 + (radius - 50) * Math.cos(angleInRadians); // Adjust the length of the line
+	const y2 = radius*1.1 + (radius - 50) * Math.sin(angleInRadians);
 
 	return (
-		<G style={{ pointerEvents: "none"}}>
+		<G style={{ pointerEvents: "none" }}>
 			<Line
 				pointerEvents='none'
 				x1={x1}
@@ -22,7 +22,7 @@ const DateLine: React.FC<{ radius: number; angle: number }> = ({
 				x2={x2}
 				y2={y2}
 				stroke='#800020' // Set the line color
-				strokeWidth='2' // Set the line thickness
+				strokeWidth='4' // Set the line thickness
 			/>
 		</G>
 	);

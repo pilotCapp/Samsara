@@ -19,57 +19,50 @@ import Svg, {
 	Circle,
 } from "react-native-svg";
 
-import { Line, VictoryPie, VictoryContainer } from "victory-native";
+import { Service, DataItem } from "@/types";
+
+import {
+	Line,
+	VictoryPie,
+	VictoryContainer,
+	VictoryLabel,
+} from "victory-native";
 import { services } from "@/constants/services";
 import DateLine from "@/components/DateLine";
 import EditComponents from "@/components/EditComponents";
 
-interface Service {
-	id: number;
-	name: string;
-	color: string;
-}
-
-interface DataItem {
-	x: string;
-	y: number;
-	selected: boolean;
-}
-
 const SamsaraWheel: React.FC<{
-	input_services: string[];
+	serviceUsestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
 	end_period: Date;
-}> = ({ input_services, end_period }) => {
+}> = ({ serviceUsestate, end_period }) => {
 	const today = new Date();
 	const dimensions = Dimensions.get("window");
-	const radius = dimensions.width / 4;
+	const radius = dimensions.width / 3;
 	const init_edit = false;
 	const calendarSource = require("../assets/images/calendar.png"); // Adjust path if necessary
 	let graphicData: DataItem[] = [];
 
 	const [editMode, setEditMode] = useState(init_edit);
-	const [selected_services, setSelected_services] = useState(input_services);
+	const [selected_services, setSelected_services] = serviceUsestate;
 	const [data, setData] = useState(graphicData);
 
 	const [streaming_services, setStreaming_services] = useState<Service[]>(
-		Object.values(services).filter((service) =>
-			selected_services.includes(service.name)
-		)
+		selected_services.map((key) => services[key.toLowerCase()])
 	);
+
+	console.log(streaming_services);
 	const [colorScale, setColorScale] = useState(
-		streaming_services.map((section) => section.color)
+		streaming_services.map((service) => service.colors[0])
 	);
 
 	useEffect(() => {
 		setStreaming_services(
-			Object.values(services).filter((service) =>
-				selected_services.includes(service.name)
-			)
+			selected_services.map((key) => services[key.toLowerCase()])
 		);
 	}, [selected_services]);
 
 	useEffect(() => {
-		setColorScale(streaming_services.map((section) => section.color));
+		setColorScale(streaming_services.map((service) => service.colors[0]));
 
 		graphicData = [];
 
@@ -118,35 +111,40 @@ const SamsaraWheel: React.FC<{
 	useEffect(() => {
 		Animated.timing(fadeAnim, {
 			toValue: editMode ? 1 : 0, // Fade in if editMode is true, fade out otherwise
-			duration: 500, // Duration of the animation in ms
+			duration: 400, // Duration of the animation in ms
 			useNativeDriver: true, // Use native driver for better performance
 		}).start();
 	}, [editMode, fadeAnim]);
 
-	useEffect(() => {
-		//console.log("data is updated: ", selected_services);
-		//console.log("data is updated: ", data);
-	}, [data]);
-
-	return (	
+	return (
 		<View style={styles.container}>
 			<View style={styles.container}>
 				<View style={styles.container}>
 					<VictoryPie
 						key={data.map((datum) => datum.selected).join(",")}
 						data={data}
-						width={2 * radius}
-						height={2 * radius}
-						innerRadius={({ datum }) =>
-							radius * 0.8 + (datum.selected ? 10 : 0)
-						}
+						width={2.2 * radius}
+						height={2.2 * radius}
+						radius={({ index }) => radius + (index === 0 ? 10 : 0)}
+						innerRadius={({ datum }) => radius - 30 - (datum.selected ? 10 : 0)}
+						labelRadius={radius-60}
+						labelPlacement={"perpendicular"}
 						style={{
 							labels: {
 								fill: ({ datum }: { datum: DataItem }) =>
 									datum.selected ? "white" : "none",
 								fontSize: 15,
-								padding: 7,
+								padding: 3,
 								pointerEvents: "none",
+								bold: true,
+							} as any,
+							data: {
+								opacity: ({ index }: { index: number }) =>
+									index === 0 ? 1 : 0.9,
+								stroke: ({ index }: { index: number }) =>
+									index === 0 ? "gold" : "none",
+								strokeWidth: 2,
+								glow: true,
 							} as any,
 						}}
 						colorScale={colorScale}
@@ -189,6 +187,8 @@ const SamsaraWheel: React.FC<{
 									}),
 								},
 							],
+
+							pointerEvents: editMode ? "box-none" : "none",
 						},
 					]}>
 					<EditComponents

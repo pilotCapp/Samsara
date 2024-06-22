@@ -7,7 +7,7 @@ const EditComponents: React.FC<{
 	Radius: number;
 	service_usestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
 }> = ({ Radius, service_usestate }) => {
-	Radius = Radius * 1;
+	Radius = Radius * 1.1;
 	const smallRadius = Radius / 10;
 	let [selected_services, setSelected_services] = service_usestate;
 
@@ -52,7 +52,6 @@ const EditComponents: React.FC<{
 	};
 
 	function handlePress(index: number) {
-		console.log("Pressed: ", index);
 		if (index == 0) {
 			CurrentPeriodAlert((response: boolean) => {
 				if (response) {
@@ -71,7 +70,6 @@ const EditComponents: React.FC<{
 	}
 
 	useEffect(() => {
-		console.log("Selected services component: ", selected_services);
 	}, [selected_services]);
 	return (
 		<View style={styles.container}>
@@ -79,12 +77,6 @@ const EditComponents: React.FC<{
 				height={Radius * 3}
 				width={Radius * 3}
 				style={{
-					shadowOffset: {
-						width: 0,
-						height: 3,
-					},
-					shadowOpacity: 0.5,
-					shadowRadius: 5,
 					position: "absolute",
 					pointerEvents: "box-none",
 				}}>
@@ -105,6 +97,13 @@ const EditComponents: React.FC<{
 							backgroundColor: "white",
 							borderRadius: smallRadius,
 							borderColor: "black",
+							shadowOffset: {
+								width: 0,
+								height: 3,
+							},
+							shadowOpacity: 0.5,
+							shadowRadius: 5,
+							 
 						}}>
 						<View
 							style={{
