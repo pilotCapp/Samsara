@@ -6,10 +6,12 @@ import { Line } from "victory-native";
 const EditComponents: React.FC<{
 	Radius: number;
 	service_usestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
-}> = ({ Radius, service_usestate }) => {
+	angle_usestate: [number, React.Dispatch<React.SetStateAction<number>>];
+}> = ({ Radius, service_usestate, angle_usestate }) => {
 	Radius = Radius * 1.1;
 	const smallRadius = Radius / 10;
-	let [selected_services, setSelected_services] = service_usestate;
+	const [selected_services, setSelected_services] = service_usestate;
+	const [endAngle, setEndAngle] = angle_usestate;
 
 	// Helper function to calculate position
 	const calculatePosition = (angle: number, radius: number) => {
@@ -59,6 +61,8 @@ const EditComponents: React.FC<{
 						(item) => item !== selected_services[index]
 					);
 					setSelected_services(new_services);
+					setEndAngle((360 / selected_services.length) * index);
+
 				}
 			});
 		} else {
@@ -66,11 +70,12 @@ const EditComponents: React.FC<{
 				(item) => item !== selected_services[index]
 			);
 			setSelected_services(new_services);
+			setEndAngle((360 / selected_services.length) * index);
+
 		}
 	}
 
-	useEffect(() => {
-	}, [selected_services]);
+	useEffect(() => {}, [selected_services]);
 	return (
 		<View style={styles.container}>
 			<View
@@ -103,7 +108,6 @@ const EditComponents: React.FC<{
 							},
 							shadowOpacity: 0.5,
 							shadowRadius: 5,
-							 
 						}}>
 						<View
 							style={{
