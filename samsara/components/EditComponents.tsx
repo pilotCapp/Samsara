@@ -7,6 +7,7 @@ const EditComponents: React.FC<{
 	Radius: number;
 	service_usestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
 	angle_usestate: [number, React.Dispatch<React.SetStateAction<number>>];
+
 }> = ({ Radius, service_usestate, angle_usestate }) => {
 	Radius = Radius * 1.1;
 	const smallRadius = Radius / 10;
@@ -62,7 +63,6 @@ const EditComponents: React.FC<{
 					);
 					setSelected_services(new_services);
 					setEndAngle((360 / selected_services.length) * index);
-
 				}
 			});
 		} else {

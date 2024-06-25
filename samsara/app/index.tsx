@@ -8,8 +8,14 @@ import { services } from "@/constants/services";
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function Page() {
-	const end_period = new Date();
-	end_period.setDate(end_period.getDate() + 20);
+
+	const [end_period, setEnd_period] = useState(() => {
+		const today = new Date();
+		const futureDate = new Date(today);
+		futureDate.setDate(futureDate.getDate() + 20);
+		return futureDate;
+	  });
+
 	const init_services: string[] = [
 		"paramount",
 		"hulu",
@@ -28,39 +34,49 @@ export default function Page() {
 	);
 
 	useEffect(() => {
-		const serviceKey = selected_services[0].toLowerCase();
-		const serviceData = services[serviceKey];
-		if (serviceData) {
+		if (selected_services.length > 0) {
+			const serviceKey = selected_services[0].toLowerCase();
+			const serviceData = services[serviceKey];
 			setSelected_service_data(serviceData);
+		} else {
+			setSelected_service_data({
+				name: "test",
+				colors: ["#FFFFFF", "#FFFFFF", "#FFFFFF"],
+				id: 0,
+				image: require("../assets/logos/disney.png"),
+			});
 		}
 	}, [selected_services]);
 
-	return (
+	return selected_services.length > 0 ? (
 		<LinearGradient
 			// Button Linear Gradient
 			locations={[0.05, 0.7, 1]}
-			colors={selected_service_data.colors.toReversed().slice(0, 3)}
+			colors={selected_service_data.colors.slice(0, 3).reverse()} // Fixed reverse method
 			style={styles.container}>
 			<Stack.Screen
 				name=''
 				options={{
 					title: "test",
-					header: () => <Header service_data={selected_service_data} />,
+					header: () =>
+						selected_services.length > 0 ? (
+							<Header service_data={selected_service_data} />
+						) : (
+							<View />
+						),
 				}}
 			/>
 			<View style={styles.main}>
-				{selected_services.length > 0 ? (
-					<SamsaraWheel
-						serviceUsestate={[selected_services, setSelected_services]}
-						end_period={end_period}
-					/>
-				) : (
-					<View>
-						<Text>select a service down below</Text>
-					</View>
-				)}
+				<SamsaraWheel
+					serviceUsestate={[selected_services, setSelected_services]}
+					end_period={end_period}
+				/>
 			</View>
 		</LinearGradient>
+	) : (
+		<View>
+			<Stack.Screen/>
+		</View>
 	);
 }
 
@@ -110,6 +126,9 @@ const serviceStyles = StyleSheet.create({
 	},
 	youtube: {
 		backgroundColor: "#ff0000",
+	},
+	paramount: {
+		backgroundColor: "#000",
 	},
 });
 

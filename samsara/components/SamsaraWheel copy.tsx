@@ -21,8 +21,12 @@ import Svg, {
 
 import { Service, DataItem } from "@/types";
 
-import { VictoryPie } from "victory-native";
-
+import {
+	Line,
+	VictoryPie,
+	VictoryContainer,
+	VictoryLabel,
+} from "victory-native";
 import { services } from "@/constants/services";
 import DateLine from "@/components/DateLine";
 import EditComponents from "@/components/EditComponents";
@@ -41,116 +45,57 @@ const SamsaraWheel: React.FC<{
 	const [editMode, setEditMode] = useState(init_edit);
 	const [selected_services, setSelected_services] = serviceUsestate;
 	const [data, setData] = useState(graphicData);
-	const [endAngle, setEndAngle] = useState(0);
 
-	const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity 0
-
-	let colorScale = selected_services.map(
-		(key) => services[key.toLowerCase()].colors[0]
+	const [streaming_services, setStreaming_services] = useState<Service[]>(
+		selected_services.map((key) => services[key.toLowerCase()])
 	);
 
-	function initiallizeData() {
-		const newData: DataItem[] = selected_services.map((key) => ({
-			y: 100 / selected_services.length,
-			x: services[key].name,
-			selected: false,
-		}));
+	console.log(streaming_services);
+	const [colorScale, setColorScale] = useState(
+		streaming_services.map((service) => service.colors[0])
+	);
 
-		setData(newData);
-	}
-
-	function alterData() {
-		colorScale = selected_services.map(
-			(key) => services[key.toLowerCase()].colors[0]
+	useEffect(() => {
+		setStreaming_services(
+			selected_services.map((key) => services[key.toLowerCase()])
 		);
-		setData((prevData) => {
-			// Step 1: Filter out items in prevData that are no longer in selected_services
-			const filteredData = prevData.filter((item) =>
-				selected_services.includes(item.x)
-			);
-
-			// Step 2: Create a set of existing x values for quick lookup
-			const existingXValues = new Set(filteredData.map((item) => item.x));
-
-			// Step 3: Add new items from selected_services that are not in prevData
-			const newItems = selected_services
-				.filter((service) => !existingXValues.has(service))
-				.map((key) => ({
-					y: 100 / selected_services.length,
-					x: services[key].name,
-					selected: false,
-				}));
-
-			// Step 4: Combine filteredData and newItems
-			return [...filteredData, ...newItems];
-		});
-	}
-
-	useEffect(() => {
-		Animated.timing(fadeAnim, {
-			toValue: editMode ? 1 : 0, // Fade in if editMode is true, fade out otherwise
-			duration: 400, // Duration of the animation in ms
-			useNativeDriver: true, // Use native driver for better performance
-		}).start();
-	}, [editMode, fadeAnim]);
-
-	useEffect(() => {
-		setTimeout(() => {
-			setEndAngle(360);
-		}, 100);
-		initiallizeData();
-	}, []);
-	useEffect(() => {
-		setTimeout(() => {
-			setEndAngle(360);
-		}, 1);
-	}, [endAngle]);
-
-	useEffect(() => {}, [data]);
-
-	useEffect(() => {
-		alterData();
 	}, [selected_services]);
 
-	const sectionSelectione2 = (name: string) => {
-		const startTime = performance.now();
+	useEffect(() => {
+		setColorScale(streaming_services.map((service) => service.colors[0]));
 
-		setData((prevData) => {
-			let hasChanged = false;
+		graphicData = [];
 
-			const newData = prevData.map((item) => {
-				if (item.x === name) {
-					hasChanged = true;
-					return { ...item, selected: !item.selected };
-				}
-				if (item.selected) {
-					hasChanged = true;
-					return { ...item, selected: false };
-				}
-				return item;
+		for (let i = 0; i < streaming_services.length; i++) {
+			graphicData.push({
+				y: 100 / streaming_services.length,
+				x: streaming_services[i].name,
+				selected: false,
 			});
+		}
 
-			return hasChanged ? newData : prevData;
-		});
-
-		const endTime = performance.now();
-		const elapsedTime = endTime - startTime;
-
-		console.log(`Function 1 took ${elapsedTime} milliseconds`);
-	};
+		console.log("resetting gaphic data: ", graphicData);
+		setData(graphicData);
+	}, [streaming_services]);
 
 	function sectionSelection(name: string) {
-		setData((prevData) =>
-			prevData.map((item) =>
-				item.x === name
-					? { ...item, selected: !item.selected }
-					: { ...item, selected: false }
-			)
-		);
+		let newData: DataItem[] = [];
+		for (let i = 0; i < data.length; i++) {
+			if (data[i].x != name) {
+				newData[i] = { y: data[i].y, x: data[i].x, selected: false };
+			} else {
+				newData[i] = {
+					y: data[i].y,
+					x: data[i].x,
+					selected: !data[i].selected,
+				};
+			}
+			setData(newData);
+		}
 	}
 
 	function getSectionAngle() {
-		const sectiondegree = 360 / selected_services.length;
+		const sectiondegree = 360 / streaming_services.length;
 		const timedifference = Math.ceil(
 			30 - (end_period.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
 		);
@@ -161,15 +106,34 @@ const SamsaraWheel: React.FC<{
 		setEditMode(!editMode);
 	}
 
+	const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity 0
+
+	useEffect(() => {
+		Animated.timing(fadeAnim, {
+			toValue: editMode ? 1 : 0, // Fade in if editMode is true, fade out otherwise
+			duration: 400, // Duration of the animation in ms
+			useNativeDriver: true, // Use native driver for better performance
+		}).start();
+	}, [editMode, fadeAnim]);
+
+	const [endAngle, setEndAngle] = useState(0);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setData(graphicData);
+      setEndAngle(360);
+    }, 100);
+  }, []);
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.container}>
 				<View style={styles.container}>
 					<VictoryPie
-						key={data.map((d) => d.x).join(",")}
-						endAngle={endAngle}
+					      endAngle={endAngle}
+
 						animate={{
-							easing: "bounce",
+							easing: "exp",
 							duration: 1000,
 						}}
 						data={data}
@@ -177,13 +141,14 @@ const SamsaraWheel: React.FC<{
 						height={2.2 * radius}
 						radius={({ index }) => radius + (index === 0 ? 10 : 0)}
 						innerRadius={({ datum }) => radius - 30 - (datum.selected ? 10 : 0)}
-						labelRadius={radius - 70}
+						labelRadius={radius - 60}
 						labelPlacement={"perpendicular"}
 						style={{
 							labels: {
 								fill: ({ datum }: { datum: DataItem }) =>
 									datum.selected ? "white" : "none",
-								fontSize: radius / 12,
+								fontSize: 15,
+								padding: 3,
 								pointerEvents: "none",
 								bold: true,
 							} as any,
@@ -193,8 +158,10 @@ const SamsaraWheel: React.FC<{
 								stroke: ({ index }: { index: number }) =>
 									index === 0 ? "gold" : "none",
 								strokeWidth: 2,
+								glow: true,
 							} as any,
 						}}
+						colorScale={colorScale}
 						padAngle={3}
 						events={[
 							{
@@ -206,7 +173,6 @@ const SamsaraWheel: React.FC<{
 								},
 							},
 						]}
-						colorScale={colorScale}
 					/>
 					<Svg style={styles.svg_container}>
 						<DateLine radius={radius} angle={getSectionAngle()} />
@@ -242,7 +208,6 @@ const SamsaraWheel: React.FC<{
 					<EditComponents
 						Radius={radius}
 						service_usestate={[selected_services, setSelected_services]}
-						angle_usestate={[endAngle, setEndAngle]}
 					/>
 				</Animated.View>
 			</View>
