@@ -10,7 +10,7 @@ const EditComponents: React.FC<{
 
 }> = ({ Radius, service_usestate, angle_usestate }) => {
 	Radius = Radius * 1.1;
-	const smallRadius = Radius / 10;
+	const smallRadius = Math.min(Radius / 10,20);
 	const [selected_services, setSelected_services] = service_usestate;
 	const [endAngle, setEndAngle] = angle_usestate;
 
@@ -102,12 +102,6 @@ const EditComponents: React.FC<{
 							backgroundColor: "white",
 							borderRadius: smallRadius,
 							borderColor: "black",
-							shadowOffset: {
-								width: 0,
-								height: 3,
-							},
-							shadowOpacity: 0.5,
-							shadowRadius: 5,
 						}}>
 						<View
 							style={{
