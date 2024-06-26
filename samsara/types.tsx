@@ -4,7 +4,7 @@ export interface Service {
 	id: number;
 	name: string;
 	colors: string[];
-	image: string;
+	image: string | { uri: string; };
 }
 
 export interface DataItem {

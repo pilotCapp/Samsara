@@ -28,7 +28,7 @@ import DateLine from "@/components/DateLine";
 import EditComponents from "@/components/EditComponents";
 
 const SamsaraWheel: React.FC<{
-	serviceUsestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
+	serviceUsestate: [String[], React.Dispatch<React.SetStateAction<String[]>>];
 	end_period: Date;
 }> = ({ serviceUsestate, end_period }) => {
 	const today = new Date();
@@ -112,7 +112,7 @@ const SamsaraWheel: React.FC<{
 		alterData();
 	}, [selected_services]);
 
-	const sectionSelectione2 = (name: string) => {
+	const sectionSelectione2 = (name: String) => {
 		const startTime = performance.now();
 
 		setData((prevData) => {
@@ -139,7 +139,7 @@ const SamsaraWheel: React.FC<{
 		console.log(`Function 1 took ${elapsedTime} milliseconds`);
 	};
 
-	function sectionSelection(name: string) {
+	function sectionSelection(name: String) {
 		setData((prevData) =>
 			prevData.map((item) =>
 				item.x === name
@@ -163,7 +163,14 @@ const SamsaraWheel: React.FC<{
 
 	return (
 		<View style={styles.container}>
-			<View style={styles.container}>
+			<View style={{...styles.container,
+						shadowOffset: {
+							width: 0,
+							height: 3,
+						},
+						shadowOpacity: 0.5,
+						shadowRadius: 5,
+					}}>
 				<View style={styles.container}>
 					<VictoryPie
 						key={data.map((d) => d.x).join(",")}

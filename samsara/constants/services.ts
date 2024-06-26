@@ -55,5 +55,16 @@ export const services:{[key: string]: Service} = {
         name: 'Paramount+',
         colors: ['#2864f0',"#11518a","#0D2C4D"],
         image: require("../assets/logos/paramount.png")
-    }
-  };
+    }, 
+    init:{
+        id:0,
+        name: "Initializing",
+        colors: ['#FFFFFF',"#FFFFFF","#FFFFFF"],
+        image:{uri: "https://icons8.com/preloaders/preloaders/334/Thin%20filling%20broken%20ring.gif"}
+    },
+    none:{
+        id:100,
+        name: "No services selected",
+        colors: ['#FFFFFF',"#FFFFFF","#FFFFFF"],
+        image: "not-found",
+  }};
