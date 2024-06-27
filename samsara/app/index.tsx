@@ -1,4 +1,10 @@
-import { Button, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+	Button,
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+} from "react-native";
 import SamsaraWheel from "@/components/SamsaraWheel";
 import Header from "./header";
 import { Stack } from "expo-router";
@@ -7,6 +13,7 @@ import { Service } from "@/types";
 import { services } from "@/constants/services";
 import { LinearGradient } from "expo-linear-gradient";
 import * as FileSystem from "expo-file-system";
+import DragMenu from "@/components/DragMenu";
 
 export default function Page() {
 	const fileUri = FileSystem.documentDirectory + "state.json";
@@ -106,61 +113,67 @@ export default function Page() {
 		}
 	};
 
-	return selected_services.length > 0 && selected_service_data ? (
-		<LinearGradient
-			// Button Linear Gradient
-			locations={[0.05, 0.7, 1]}
-			colors={selected_service_data.colors.slice(0, 3).reverse()} // Fixed reverse method
-			style={styles.container}>
-			<Stack.Screen
-				name=''
-				options={{
-					title: "main_header",
-					header: () =>
-						selected_services.length > 0 ? (
-							<Header service_data={selected_service_data} />
-						) : (
-							<View />
-						),
-				}}
-			/>
-			<View style={styles.main}>
-				<SamsaraWheel
-					serviceUsestate={[selected_services, setSelected_services]}
-					end_period={end_period}
-				/>
-			</View>
-		</LinearGradient>
-	) : (
-		<View
-			style={{
-				alignItems: "center",
-				justifyContent: "center",
-				backgroundColor: "#E5E4E2",
-				flex: 1,
-			}}>
-			<Stack.Screen
-				options={{
-					title: "null_header",
-					header: () => (
-						<View style={styles.no_services_header}>
-							<Text style={styles.subtitle}>
-								Please add some services below
-							</Text>
-						</View>
-					),
-				}}
-			/>
-			<Pressable
-				style={{
-					backgroundColor: "black",
-					height: 40,
-					width: 40,
-					borderRadius: 20,
-				}}
-				onPress={() => {
-					setSelected_services(["disney", "netflix", "apple"]);
-				}}></Pressable>
+	return (
+		<View style={{ flex: 1, justifyContent:"flex-end" }}>
+			{/* Your always-rendered component goes here */}
+			{selected_services.length > 0 && selected_service_data ? (
+				<LinearGradient
+					// Button Linear Gradient
+					locations={[0.05, 0.7, 1]}
+					colors={selected_service_data.colors.slice(0, 3).reverse()} // Fixed reverse method
+					style={styles.container}>
+					<Stack.Screen
+						name=''
+						options={{
+							title: "main_header",
+							header: () =>
+								selected_services.length > 0 ? (
+									<Header service_data={selected_service_data} />
+								) : (
+									<View />
+								),
+						}}
+					/>
+					<View style={styles.main}>
+						<SamsaraWheel
+							serviceUsestate={[selected_services, setSelected_services]}
+							end_period={end_period}
+						/>
+					</View>
+				</LinearGradient>
+			) : (
+				<View
+					style={{
+						alignItems: "center",
+						justifyContent: "center",
+						backgroundColor: "#E5E4E2",
+						flex: 1,
+					}}>
+					<Stack.Screen
+						options={{
+							title: "null_header",
+							header: () => (
+								<View style={styles.no_services_header}>
+									<Text style={styles.subtitle}>
+										Please add some services below
+									</Text>
+								</View>
+							),
+						}}
+					/>
+					<Pressable
+						style={{
+							backgroundColor: "black",
+							height: 40,
+							width: 40,
+							borderRadius: 20,
+						}}
+						onPress={() => {
+							setSelected_services(["disney", "netflix", "apple"]);
+						}}></Pressable>
+				</View>
+			)}
+			<DragMenu />
 		</View>
 	);
 }

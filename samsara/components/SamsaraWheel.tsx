@@ -183,7 +183,7 @@ const SamsaraWheel: React.FC<{
 						width={2.2 * radius}
 						height={2.2 * radius}
 						radius={({ index }) => radius + (index === 0 ? 10 : 0)}
-						innerRadius={({ datum }) => radius - 30 - (datum.selected ? 10 : 0)}
+						innerRadius={({ datum }) => radius - 30 - (datum.selected ? 20 : 0)}
 						labelRadius={radius - 70}
 						labelPlacement={"perpendicular"}
 						style={{
