@@ -12,6 +12,7 @@ const DateLine: React.FC<{ radius: number; angle: number }> = ({
 	const y1 = radius * 1.1 + (radius + 10) * Math.sin(angleInRadians);
 	const x2 = radius * 1.1 + (radius - 40) * Math.cos(angleInRadians); // Adjust the length of the line
 	const y2 = radius * 1.1 + (radius - 40) * Math.sin(angleInRadians);
+	console.log(angle);
 
 	return (
 		<G style={{ pointerEvents: "none" }}>
@@ -25,7 +26,7 @@ const DateLine: React.FC<{ radius: number; angle: number }> = ({
 					markerWidth='6'
 					markerHeight='6'
 					orient='auto'>
-					<Path d='M 5 0 L -5 5 L 5 10 z' fill='white' />
+					<Path d='M 5 0 L 0 5 L 5 10 z' fill='white' />
 				</Marker>
 				{/* Arrowhead marker for the end of the line */}
 				<Marker
@@ -36,19 +37,18 @@ const DateLine: React.FC<{ radius: number; angle: number }> = ({
 					markerWidth='6'
 					markerHeight='6'
 					orient='auto'>
-					<Path d='M 0 0 L 10 5 L 0 10 z' fill='white' />
+					<Path d='M 0 0 L 5 5 L 0 10 z' fill='white' />
 				</Marker>
 				<Marker
-                        id="buttEnd"
-                        viewBox="0 0 10 10"
-                        refX="5"
-                        refY="5"
-                        markerWidth="4"
-                        markerHeight="4"
-                        orient="auto"
-                    >
-                        <Path d="M 5 3 L 5 7" stroke="white" strokeWidth="2" />
-                    </Marker>
+					id='buttEnd'
+					viewBox='0 0 10 10'
+					refX='5'
+					refY='5'
+					markerWidth='4'
+					markerHeight='4'
+					orient='auto'>
+					<Path d='M 5 3 L 5 7' stroke='white' strokeWidth='2' />
+				</Marker>
 			</Defs>
 			<Line
 				pointerEvents='none'
@@ -65,11 +65,11 @@ const DateLine: React.FC<{ radius: number; angle: number }> = ({
 			<Line
 				pointerEvents='none'
 				x1={radius * 1.1}
-				y1={20}
+				y1={radius * 1.1-radius - 10}
 				x2={radius * 1.1}
-				y2={75}
+				y2={radius * 1.1 -radius + 50}
 				stroke='#FFFFFF' // Set the line color
-				strokeWidth='20' // Set the line thickness
+				strokeWidth='5' // Set the line thickness
 				markerStart='url(#buttEnd)'
 				markerEnd='url(#buttEnd)'
 			/>

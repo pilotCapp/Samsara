@@ -28,7 +28,7 @@ import DateLine from "@/components/DateLine";
 import EditComponents from "@/components/EditComponents";
 
 const SamsaraWheel: React.FC<{
-	serviceUsestate: [String[], React.Dispatch<React.SetStateAction<String[]>>];
+	serviceUsestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
 	end_period: Date;
 }> = ({ serviceUsestate, end_period }) => {
 	const today = new Date();
@@ -112,7 +112,7 @@ const SamsaraWheel: React.FC<{
 		alterData();
 	}, [selected_services]);
 
-	const sectionSelectione2 = (name: String) => {
+	const sectionSelectione2 = (name: string) => {
 		const startTime = performance.now();
 
 		setData((prevData) => {
@@ -139,7 +139,7 @@ const SamsaraWheel: React.FC<{
 		console.log(`Function 1 took ${elapsedTime} milliseconds`);
 	};
 
-	function sectionSelection(name: String) {
+	function sectionSelection(name: string) {
 		setData((prevData) =>
 			prevData.map((item) =>
 				item.x === name
@@ -184,7 +184,7 @@ const SamsaraWheel: React.FC<{
 						height={2.2 * radius}
 						radius={({ index }) => radius + (index === 0 ? 10 : 0)}
 						innerRadius={({ datum }) => radius - 30 - (datum.selected ? 20 : 0)}
-						labelRadius={radius - 70}
+						labelRadius={radius - 75}
 						labelPlacement={"perpendicular"}
 						style={{
 							labels: {

@@ -1,10 +1,4 @@
-import {
-	Button,
-	Pressable,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
+import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 import SamsaraWheel from "@/components/SamsaraWheel";
 import Header from "./header";
 import { Stack } from "expo-router";
@@ -28,7 +22,7 @@ export default function Page() {
 	const init_services: string[] = ["init"];
 
 	const [selected_services, setSelected_services] =
-		useState<String[]>(init_services);
+		useState<string[]>(init_services);
 	const [selected_service_data, setSelected_service_data] =
 		useState<Service | null>(services[init_services[0]]);
 
@@ -73,8 +67,13 @@ export default function Page() {
 			if (!fileInfo.exists) {
 				console.log("File does not exist, creating with default values.");
 
+				const currentDate = new Date();
+
+				// Step 2: Add 30 days
+				const futureDate = new Date();
+				futureDate.setDate(currentDate.getDate() + 30);
 				const defaultState = {
-					end_period: new Date().toISOString(), // Use current date for initial state
+					end_period: futureDate, // Use current date for initial state
 					selected_services: init_services,
 				};
 
@@ -114,7 +113,7 @@ export default function Page() {
 	};
 
 	return (
-		<View style={{ flex: 1, justifyContent:"flex-end" }}>
+		<View style={{ height: "100%", width: "100%" }}>
 			{/* Your always-rendered component goes here */}
 			{selected_services.length > 0 && selected_service_data ? (
 				<LinearGradient
@@ -173,7 +172,7 @@ export default function Page() {
 						}}></Pressable>
 				</View>
 			)}
-			<DragMenu />
+			<DragMenu serviceUsestate={[selected_services, setSelected_services]} />
 		</View>
 	);
 }
@@ -182,7 +181,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
-		padding: 24,
 	},
 	main: {
 		flex: 1,
