@@ -9,7 +9,6 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { Button, FlatListComponent, View } from "react-native";
 import Header from "./header";
 
@@ -17,7 +16,6 @@ import Header from "./header";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-	const colorScheme = useColorScheme();
 	const [loaded] = useFonts({
 		SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
 	});
@@ -33,9 +31,8 @@ export default function RootLayout() {
 	}
 
 	return (
-		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+		<ThemeProvider value={DefaultTheme}>
 			<Stack>
-				<Stack.Screen name='(tabs)' options={{ headerShown: false }} />
 				<Stack.Screen name='+not-found' />
 			</Stack>
 		</ThemeProvider>

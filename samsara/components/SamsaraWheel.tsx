@@ -8,8 +8,7 @@ import {
 	Button,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
-
-import { ThemedText } from "@/components/ThemedText";
+import { Asset } from "expo-asset";
 import { transform } from "@babel/core";
 import Svg, {
 	Path,
@@ -29,27 +28,46 @@ import EditComponents from "@/components/EditComponents";
 
 const SamsaraWheel: React.FC<{
 	serviceUsestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
+	centerUsestate: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 	end_period: Date;
-}> = ({ serviceUsestate, end_period }) => {
+}> = ({ serviceUsestate, centerUsestate, end_period }) => {
 	const today = new Date();
 	const dimensions = Dimensions.get("window");
 	const radius = dimensions.width / 3;
 	const init_edit = false;
-	const calendarSource = require("../assets/images/calendar.png"); // Adjust path if necessary
 	let graphicData: DataItem[] = [];
 
 	const [editMode, setEditMode] = useState(init_edit);
 	const [selected_services, setSelected_services] = serviceUsestate;
+	const [addServiceVisual, setAddServiceVisual] = centerUsestate;
 	const [data, setData] = useState(graphicData);
 	const [endAngle, setEndAngle] = useState(0);
 
 	const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity 0
 
+	const cacheImages = async () => {
+		const images = [
+			require("../assets/images/add_service.png"),
+			require("../assets/images/calendar.png"),
+		];
+
+		const cachePromises = images.map((image) =>
+			Asset.fromModule(image).downloadAsync()
+		);
+		await Promise.all(cachePromises);
+	};
+
 	let colorScale = selected_services.map(
 		(key) => services[key.toLowerCase()].colors[0]
 	);
 
-	function initiallizeData() {
+	async function initiallizeData() {
+		try {
+			await cacheImages();
+		} catch (error) {
+			console.error("Error caching images:", error);
+		}
+
 		const newData: DataItem[] = selected_services.map((key) => ({
 			y: 100 / selected_services.length,
 			x: services[key].name,
@@ -163,14 +181,16 @@ const SamsaraWheel: React.FC<{
 
 	return (
 		<View style={styles.container}>
-			<View style={{...styles.container,
-						shadowOffset: {
-							width: 0,
-							height: 3,
-						},
-						shadowOpacity: 0.5,
-						shadowRadius: 5,
-					}}>
+			<View
+				style={{
+					...styles.container,
+					shadowOffset: {
+						width: 0,
+						height: 3,
+					},
+					shadowOpacity: 0.5,
+					shadowRadius: 5,
+				}}>
 				<View style={styles.container}>
 					<VictoryPie
 						key={data.map((d) => d.x).join(",")}
@@ -218,14 +238,23 @@ const SamsaraWheel: React.FC<{
 					<Svg style={styles.svg_container}>
 						<DateLine radius={radius} angle={getSectionAngle()} />
 					</Svg>
-					<Pressable onPress={toggleEdit} style={{ position: "absolute" }}>
+
+					<Pressable
+						onPress={toggleEdit}
+						style={{
+							position: "absolute",
+							alignItems: "center",
+							justifyContent: "center",
+							height: radius / 2,
+							aspectRatio: 1,
+						}}>
 						<Image
-							source={calendarSource}
+							source={require("../assets/images/calendar.png")}
+							resizeMode={"contain"}
 							style={{
-								width: radius / 2,
-								height: radius / 2,
+								width: "100%",
+								height: "100%",
 							}}
-							resizeMode='contain' // Maintain aspect ratio
 						/>
 					</Pressable>
 				</View>

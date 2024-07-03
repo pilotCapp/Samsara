@@ -1,4 +1,4 @@
-import { Button, Pressable, StyleSheet, Text, View } from "react-native";
+import { Button, Pressable, StyleSheet, Text, View, Image } from "react-native";
 import SamsaraWheel from "@/components/SamsaraWheel";
 import Header from "./header";
 import { Stack } from "expo-router";
@@ -24,7 +24,9 @@ export default function Page() {
 	const [selected_services, setSelected_services] =
 		useState<string[]>(init_services);
 	const [selected_service_data, setSelected_service_data] =
-		useState<Service | null>(services[init_services[0]]);
+		useState<Service[] | null>([services["init"],services["init"]]);
+
+	const [addServiceVisual, setAddServiceVisual] = useState(false);
 
 	useEffect(() => {
 		loadStateFromFile();
@@ -32,15 +34,21 @@ export default function Page() {
 
 	useEffect(() => {
 		console.log("Selected services changed:", selected_services);
-		if (selected_services.length > 0) {
-			const serviceKey = selected_services[0].toLowerCase();
-			const serviceData = services[serviceKey];
+		if (selected_services.length > 1) {
+			const selectedServiceKey = selected_services[0].toLowerCase();
+			const nextServiceKey = selected_services[1].toLowerCase();
+			const serviceData = [services[selectedServiceKey],services[nextServiceKey]];
+			setSelected_service_data(serviceData);
+		} else if (selected_services.length == 1) {
+			const selectedServiceKey = selected_services[0].toLowerCase();
+			const nextServiceKey = selected_services[0].toLowerCase();
+			const serviceData = [services[selectedServiceKey],services[nextServiceKey]];
 			setSelected_service_data(serviceData);
 		} else {
-			setSelected_service_data(services["none"]);
+			setSelected_service_data([services["none"],services["none"]]);
 		}
-		if (selected_services != init_services || false) {
-			//true for testing only
+
+		if (!selected_services.includes(init_services[0])) {
 			const newState = {
 				end_period: end_period, // Use current date for initial state
 				selected_services: selected_services,
@@ -77,7 +85,7 @@ export default function Page() {
 					selected_services: init_services,
 				};
 
-				await saveStateToFile(defaultState); // Create the file with default values
+				saveStateToFile(defaultState); // Create the file with default values
 
 				setEnd_period(new Date(defaultState.end_period));
 				setSelected_services(defaultState.selected_services);
@@ -119,7 +127,7 @@ export default function Page() {
 				<LinearGradient
 					// Button Linear Gradient
 					locations={[0.05, 0.7, 1]}
-					colors={selected_service_data.colors.slice(0, 3).reverse()} // Fixed reverse method
+					colors={selected_service_data[0].colors.slice(0, 3).reverse()} // Fixed reverse method
 					style={styles.container}>
 					<Stack.Screen
 						name=''
@@ -127,7 +135,7 @@ export default function Page() {
 							title: "main_header",
 							header: () =>
 								selected_services.length > 0 ? (
-									<Header service_data={selected_service_data} />
+									<Header service_data={selected_service_data[0]} />
 								) : (
 									<View />
 								),
@@ -136,7 +144,28 @@ export default function Page() {
 					<View style={styles.main}>
 						<SamsaraWheel
 							serviceUsestate={[selected_services, setSelected_services]}
+							centerUsestate={[addServiceVisual, setAddServiceVisual]}
 							end_period={end_period}
+						/>
+					</View>
+					<View
+						style={{
+							width: "25%",
+							aspectRatio: 2,
+							backgroundColor: selected_service_data[1].colors[0],
+							position: "absolute",
+							alignSelf: "flex-end",
+							top: 0,
+							margin: 10,
+							padding: 8,
+							borderRadius:10,
+							borderColor:"black",
+							borderWidth:1,
+						}}>
+						<Image
+							source={selected_service_data[1].image}
+							style={{ height: "100%", width: "100%" }}
+							resizeMode={"contain"}
 						/>
 					</View>
 				</LinearGradient>
@@ -160,19 +189,12 @@ export default function Page() {
 							),
 						}}
 					/>
-					<Pressable
-						style={{
-							backgroundColor: "black",
-							height: 40,
-							width: 40,
-							borderRadius: 20,
-						}}
-						onPress={() => {
-							setSelected_services(["disney", "netflix", "apple"]);
-						}}></Pressable>
 				</View>
 			)}
-			<DragMenu serviceUsestate={[selected_services, setSelected_services]} />
+			<DragMenu
+				serviceUsestate={[selected_services, setSelected_services]}
+				centerUsestate={[addServiceVisual, setAddServiceVisual]}
+			/>
 		</View>
 	);
 }

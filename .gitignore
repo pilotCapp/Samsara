@@ -175,3 +175,5 @@ coverage/
 # Ignore files created by build tools and package managers
 build/
 logs/
+
+node_modules/
