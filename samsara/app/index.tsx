@@ -145,7 +145,7 @@ export default function Page() {
 						<SamsaraWheel
 							serviceUsestate={[selected_services, setSelected_services]}
 							centerUsestate={[addServiceVisual, setAddServiceVisual]}
-							end_period={end_period}
+							periodUsestate={ [end_period, setEnd_period]}
 						/>
 					</View>
 					<View
