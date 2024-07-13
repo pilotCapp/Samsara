@@ -34,7 +34,6 @@ export default function Page() {
 	}, []);
 
 	useEffect(() => {
-		console.log("Selected services changed:", selected_services);
 		if (selected_services.length > 1) {
 			const selectedServiceKey = selected_services[0].toLowerCase();
 			const nextServiceKey = selected_services[1].toLowerCase();
@@ -66,10 +65,16 @@ export default function Page() {
 	}, [selected_services]);
 
 	useEffect(() => {
-		console.log("period changed:", end_period);
-		const timedifference = end_period.getTime() - new Date().getTime();
-		if (timedifference < 0 || timedifference > 32 * (1000 * 60 * 60 * 24)) {
-			console.log(timedifference);
+		const today = new Date();
+		today.setHours(23, 59, 59, 999);
+		const timedifference = end_period.getTime() - today.getTime();
+		if (timedifference < 0 || timedifference > 30 * (1000 * 60 * 60 * 24)) {
+			console.log(
+				"end period",
+				end_period,
+				"is not valid with timedifference",
+				timedifference
+			);
 			throw new Error("date is invalid");
 		} else if (!selected_services.includes(init_services[0])) {
 			const newState = {
@@ -78,7 +83,12 @@ export default function Page() {
 			};
 
 			saveStateToFile(newState);
-			console.log("date set to", end_period);
+			console.log(
+				"period changed to",
+				end_period,
+				"with timedifference",
+				timedifference
+			);
 		}
 	}, [end_period]);
 
@@ -132,7 +142,6 @@ export default function Page() {
 				setSelected_services(init_services);
 				throw new Error("Selected services not found in state");
 			}
-
 		} catch (error) {
 			console.error("Error loading state:", error);
 		}

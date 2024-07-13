@@ -76,17 +76,19 @@ const DateLine: React.FC<{
 	function getDateFromAngle(angle: number) {
 		const serviceAngle = (2 * Math.PI) / selectedServicesRef.current.length;
 		const timedifference = 30 - (angle / serviceAngle) * 30;
-		// console.log(
-		// 	angle,
-		// 	serviceAngle,
-		// 	selectedServicesRef.current.length,
-		// 	timedifference
-		// );
+		console.log(
+			angle,
+			serviceAngle,
+			selectedServicesRef.current.length,
+			timedifference
+		);
 		const daysDifference = Math.max(
 			0,
 			Math.min(30, Math.round(timedifference))
 		);
-		return new Date(today.getTime() + daysDifference * c);
+		const date=new Date(today.getTime() + daysDifference * c);
+		date.setHours(23, 59, 59, 999)
+		return date;
 	}
 
 	function presentLinePositions(angle: number) {
