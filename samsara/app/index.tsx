@@ -23,8 +23,9 @@ export default function Page() {
 
 	const [selected_services, setSelected_services] =
 		useState<string[]>(init_services);
-	const [selected_service_data, setSelected_service_data] =
-		useState<Service[] | null>([services["init"],services["init"]]);
+	const [selected_service_data, setSelected_service_data] = useState<
+		Service[] | null
+	>([services["init"], services["init"]]);
 
 	const [addServiceVisual, setAddServiceVisual] = useState(false);
 
@@ -37,15 +38,21 @@ export default function Page() {
 		if (selected_services.length > 1) {
 			const selectedServiceKey = selected_services[0].toLowerCase();
 			const nextServiceKey = selected_services[1].toLowerCase();
-			const serviceData = [services[selectedServiceKey],services[nextServiceKey]];
+			const serviceData = [
+				services[selectedServiceKey],
+				services[nextServiceKey],
+			];
 			setSelected_service_data(serviceData);
 		} else if (selected_services.length == 1) {
 			const selectedServiceKey = selected_services[0].toLowerCase();
 			const nextServiceKey = selected_services[0].toLowerCase();
-			const serviceData = [services[selectedServiceKey],services[nextServiceKey]];
+			const serviceData = [
+				services[selectedServiceKey],
+				services[nextServiceKey],
+			];
 			setSelected_service_data(serviceData);
 		} else {
-			setSelected_service_data([services["none"],services["none"]]);
+			setSelected_service_data([services["none"], services["none"]]);
 		}
 
 		if (!selected_services.includes(init_services[0])) {
@@ -57,6 +64,25 @@ export default function Page() {
 			saveStateToFile(newState);
 		}
 	}, [selected_services]);
+
+	useEffect(() => {
+		console.log("period changed:", end_period);
+		const timedifference = end_period.getTime()-new Date().getTime();
+		if (timedifference < 0 || timedifference > 32 * (1000 * 60 * 60 * 24)) {
+			console.log(timedifference)
+			throw new Error("date is invalid")
+		}
+		else if (!selected_services.includes(init_services[0])) {
+
+			const newState = {
+				end_period: end_period, // Use current date for initial state
+				selected_services: selected_services,
+			};
+
+			saveStateToFile(newState);
+			console.log("date set to", end_period)
+		}
+	}, [end_period]);
 
 	const saveStateToFile = async (state) => {
 		try {
@@ -113,7 +139,7 @@ export default function Page() {
 
 			console.log(
 				"State loaded successfully with new state: ",
-				state.selected_services
+				state.selected_services, state.end_period
 			);
 		} catch (error) {
 			console.error("Error loading state:", error);
@@ -145,7 +171,7 @@ export default function Page() {
 						<SamsaraWheel
 							serviceUsestate={[selected_services, setSelected_services]}
 							centerUsestate={[addServiceVisual, setAddServiceVisual]}
-							periodUsestate={ [end_period, setEnd_period]}
+							periodUsestate={[end_period, setEnd_period]}
 						/>
 					</View>
 					<View
@@ -158,9 +184,9 @@ export default function Page() {
 							top: 0,
 							margin: 10,
 							padding: 8,
-							borderRadius:10,
-							borderColor:"black",
-							borderWidth:1,
+							borderRadius: 10,
+							borderColor: "black",
+							borderWidth: 1,
 						}}>
 						<Image
 							source={selected_service_data[1].image}
