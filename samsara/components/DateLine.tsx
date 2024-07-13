@@ -39,28 +39,27 @@ const DateLine: React.FC<{
 	}, [periodUsestate[0]]);
 
 	useEffect(() => {
+		selectedServicesRef.current = selected_services;
 		const angle = getAngleFromDate(temporary_periodUsestate[0]); //remove if temporary is deprecated
 		setLinePositions(presentLinePositions(angle));
-		selectedServicesRef.current = selected_services;
+		console.log("angle set to", angle)
 	}, [selected_services]);
 
 	const panResponder = useRef(
 		PanResponder.create({
 			onStartShouldSetPanResponder: () => true,
 			onPanResponderGrant: () => {
-				console.log("drag init");
 			},
 			onPanResponderMove: (event, gestureState) => {
 				const angle = Math.atan2(
-					gestureState.moveY - dimensions.height / 2-25,
-					gestureState.moveX - dimensions.width / 2-25
+					gestureState.moveY - dimensions.height / 2 - 25,
+					gestureState.moveX - dimensions.width / 2 - 25
 				);
 				if (
 					angle >= -Math.PI / 2 &&
 					angle <=
 						(Math.PI * 2) / selectedServicesRef.current.length - Math.PI / 2
 				) {
-					console.log(angle);
 					setLinePositions(presentLinePositions(angle));
 					angleRef.current = angle;
 				}
@@ -79,7 +78,6 @@ const DateLine: React.FC<{
 			(((2 * Math.PI) / selectedServicesRef.current.length) * timedifference) /
 				32 -
 			Math.PI / 2;
-		console.log(angle);
 
 		return angle;
 	}
@@ -189,6 +187,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		height: "100%",
 		borderRadius: 100,
+		pointerEvents: "box-none",
 	},
 });
 

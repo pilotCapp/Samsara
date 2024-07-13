@@ -6,6 +6,7 @@ import {
 	Image,
 	Animated,
 	Button,
+	LayoutChangeEvent,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { Asset } from "expo-asset";
@@ -29,8 +30,8 @@ import EditComponents from "@/components/EditComponents";
 const SamsaraWheel: React.FC<{
 	serviceUsestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
 	centerUsestate: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-	end_period: Date;
-}> = ({ serviceUsestate, centerUsestate, end_period }) => {
+	periodUsestate: [Date, React.Dispatch<React.SetStateAction<Date>>];
+}> = ({ serviceUsestate, centerUsestate, periodUsestate }) => {
 	const today = new Date();
 	const dimensions = Dimensions.get("window");
 	const radius = dimensions.width / 3;
@@ -44,6 +45,7 @@ const SamsaraWheel: React.FC<{
 	const [endAngle, setEndAngle] = useState(0);
 
 	const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity 0
+	const [layout, setLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
 
 	const cacheImages = async () => {
 		const images = [
@@ -170,7 +172,8 @@ const SamsaraWheel: React.FC<{
 	function getSectionAngle() {
 		const sectiondegree = 360 / selected_services.length;
 		const timedifference = Math.ceil(
-			30 - (end_period.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+			30 -
+				(periodUsestate[0].getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
 		);
 		return (sectiondegree * timedifference) / 32;
 	}
@@ -178,6 +181,25 @@ const SamsaraWheel: React.FC<{
 	function toggleEdit() {
 		setEditMode(!editMode);
 	}
+
+	function presentLinePositions() {
+		// Convert angle to radians
+		const angleInRadians = (getSectionAngle() - 90) * (Math.PI / 180);
+		// Calculate start and end points for the line
+		const x1 = radius * 1.1 + (radius + 10) * Math.cos(angleInRadians);
+		const y1 = radius * 1.1 + (radius + 10) * Math.sin(angleInRadians);
+		const x2 = radius * 1.1 + (radius - 40) * Math.cos(angleInRadians); // Adjust the length of the line
+		const y2 = radius * 1.1 + (radius - 40) * Math.sin(angleInRadians);
+		return [
+			[x1, y1],
+			[x2, y2],
+		];
+	}
+	const handleLayout = (event: LayoutChangeEvent) => {
+		const { x, y, width, height } = event.nativeEvent.layout;
+		setLayout({ x, y, width, height });
+		console.log(event.nativeEvent.layout);
+	};
 
 	return (
 		<View style={styles.container}>
@@ -191,7 +213,7 @@ const SamsaraWheel: React.FC<{
 					shadowOpacity: 0.5,
 					shadowRadius: 5,
 				}}>
-				<View style={styles.container}>
+				<View style={styles.container} onLayout={handleLayout}>
 					<VictoryPie
 						key={data.map((d) => d.x).join(",")}
 						endAngle={endAngle}
@@ -235,9 +257,12 @@ const SamsaraWheel: React.FC<{
 						]}
 						colorScale={colorScale}
 					/>
-					<Svg style={styles.svg_container}>
-						<DateLine radius={radius} angle={getSectionAngle()} />
-					</Svg>
+					<DateLine
+						radius={radius}
+						periodUsestate={periodUsestate}
+						selected_services={selected_services}
+						parentLayout={layout}
+					/>
 
 					<Pressable
 						onPress={toggleEdit}
