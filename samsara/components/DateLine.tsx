@@ -23,11 +23,7 @@ const DateLine: React.FC<{
 	const dimensions = Dimensions.get("window");
 	const angleRef = useRef(0);
 	const selectedServicesRef = useRef(selected_services);
-	const temporary_periodUsestate = useState<Date>(periodUsestate[0]);
-
-	const temporary_periodAnimation = useRef(
-		new Animated.Value(periodUsestate[0].getTime())
-	).current;
+	const c = 1000 * 60 * 60 * 24;
 
 	const [linePositions, setLinePositions] = useState<number[][]>(
 		presentLinePositions(getAngleFromDate(periodUsestate[0]))
@@ -40,32 +36,31 @@ const DateLine: React.FC<{
 
 	useEffect(() => {
 		selectedServicesRef.current = selected_services;
-		const angle = getAngleFromDate(temporary_periodUsestate[0]); //remove if temporary is deprecated
+		const angle = getAngleFromDate(periodUsestate[0]); //remove if temporary is deprecated
 		setLinePositions(presentLinePositions(angle));
-		console.log("angle set to", angle)
 	}, [selected_services]);
 
 	const panResponder = useRef(
 		PanResponder.create({
 			onStartShouldSetPanResponder: () => true,
-			onPanResponderGrant: () => {
-			},
+			onPanResponderGrant: () => {},
 			onPanResponderMove: (event, gestureState) => {
-				const angle = Math.atan2(
-					gestureState.moveY - dimensions.height / 2 - 25,
-					gestureState.moveX - dimensions.width / 2 - 25
-				);
+				const angle =
+					-Math.atan2(
+						gestureState.moveX - dimensions.width / 2 - 25,
+						gestureState.moveY - dimensions.height / 2 - 25
+					) + Math.PI;
 				if (
-					angle >= -Math.PI / 2 &&
-					angle <=
-						(Math.PI * 2) / selectedServicesRef.current.length - Math.PI / 2
+					angle > 0 &&
+					angle < (2 * Math.PI) / selectedServicesRef.current.length
 				) {
 					setLinePositions(presentLinePositions(angle));
 					angleRef.current = angle;
 				}
 			},
 			onPanResponderRelease: (_, gestureState) => {
-				console.log("drag end");
+				const new_date = getDateFromAngle(angleRef.current);
+				periodUsestate[1](new_date);
 			},
 		})
 	).current;
@@ -76,27 +71,30 @@ const DateLine: React.FC<{
 		);
 		const angle =
 			(((2 * Math.PI) / selectedServicesRef.current.length) * timedifference) /
-				32 -
-			Math.PI / 2;
+			32;
 
 		return angle;
 	}
 
-	function getDaysLeftFromAngle(angle: number) {
-		const c = 1000 * 60 * 60 * 24;
+	function getDateFromAngle(angle: number) {
 		const serviceAngle = (2 * Math.PI) / selectedServicesRef.current.length;
 		const timedifference = 32 - (angle / serviceAngle) * 32;
+		// console.log(
+		// 	angle,
+		// 	serviceAngle,
+		// 	selectedServicesRef.current.length,
+		// 	timedifference
+		// );
 		const daysDifference = Math.round(timedifference);
-
 		return new Date(today.getTime() + daysDifference * c);
 	}
 
 	function presentLinePositions(angle: number) {
 		// Calculate start and end points for the line
-		const x1 = radius * 1.1 + (radius + 10) * Math.cos(angle);
-		const y1 = radius * 1.1 + (radius + 10) * Math.sin(angle);
-		const x2 = radius * 1.1 + (radius - 40) * Math.cos(angle);
-		const y2 = radius * 1.1 + (radius - 40) * Math.sin(angle);
+		const x1 = radius * 1.1 + (radius + 10) * Math.sin(angle);
+		const y1 = radius * 1.1 - (radius + 10) * Math.cos(angle);
+		const x2 = radius * 1.1 + (radius - 40) * Math.sin(angle);
+		const y2 = radius * 1.1 - (radius - 40) * Math.cos(angle);
 		return [
 			[x1, y1],
 			[x2, y2],
