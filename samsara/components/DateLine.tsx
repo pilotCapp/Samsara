@@ -1,3 +1,4 @@
+import { transform } from "@babel/core";
 import React, { useEffect, useRef, useState } from "react";
 import {
 	Animated,
@@ -5,8 +6,9 @@ import {
 	View,
 	StyleSheet,
 	Dimensions,
+	Image,
 } from "react-native";
-import Svg, { Defs, G, Line, Marker, Path } from "react-native-svg"; // Use `react-native-svg` for React Native
+import Svg, { Defs, G, Line, Polyline, Marker, Path } from "react-native-svg"; // Use `react-native-svg` for React Native
 
 const DateLine: React.FC<{
 	radius: number;
@@ -25,7 +27,7 @@ const DateLine: React.FC<{
 	const selectedServicesRef = useRef(selected_services);
 	const c = 1000 * 60 * 60 * 24;
 
-	const [linePositions, setLinePositions] = useState<number[][]>(
+	const [linePositions, setLinePositions] = useState<number[]>(
 		presentLinePositions(getAngleFromDate(periodUsestate[0]))
 	);
 	const periodUsestateRef = useRef(periodUsestate);
@@ -36,7 +38,8 @@ const DateLine: React.FC<{
 
 	useEffect(() => {
 		selectedServicesRef.current = selected_services;
-		const angle = getAngleFromDate(periodUsestate[0]); //remove if temporary is deprecated
+		const angle = getAngleFromDate(periodUsestate[0]);
+		angleRef.current = angle;
 		setLinePositions(presentLinePositions(angle));
 	}, [selected_services]);
 
@@ -78,88 +81,45 @@ const DateLine: React.FC<{
 
 	function getDateFromAngle(angle: number) {
 		const serviceAngle = (2 * Math.PI) / selectedServicesRef.current.length;
-		const timedifference = 32 - (angle / serviceAngle) * 32;
+		const timedifference = 30 - (angle / serviceAngle) * 30;
 		// console.log(
 		// 	angle,
 		// 	serviceAngle,
 		// 	selectedServicesRef.current.length,
 		// 	timedifference
 		// );
-		const daysDifference = Math.round(timedifference);
+		const daysDifference = Math.max(
+			0,
+			Math.min(30, Math.round(timedifference))
+		);
 		return new Date(today.getTime() + daysDifference * c);
 	}
 
 	function presentLinePositions(angle: number) {
 		// Calculate start and end points for the line
-		const x1 = radius * 1.1 + (radius + 10) * Math.sin(angle);
-		const y1 = radius * 1.1 - (radius + 10) * Math.cos(angle);
-		const x2 = radius * 1.1 + (radius - 40) * Math.sin(angle);
-		const y2 = radius * 1.1 - (radius - 40) * Math.cos(angle);
-		return [
-			[x1, y1],
-			[x2, y2],
-		];
+		const x = radius * 1.1 + (radius - 20) * Math.sin(angle);
+		const y = radius * 1.1 - (radius - 20) * Math.cos(angle);
+		return [x, y];
 	}
 
 	return (
 		<View style={styles.svg_container}>
-			<Svg height='100%' width='100%'>
-				<G>
-					<Defs>
-						<Marker
-							id='arrowStart'
-							viewBox='0 0 10 10'
-							refX='5'
-							refY='5'
-							markerWidth='6'
-							markerHeight='6'
-							orient='auto'>
-							<Path d='M 5 0 L 0 5 L 5 10 z' fill='white' />
-						</Marker>
-						<Marker
-							id='arrowEnd'
-							viewBox='0 0 10 10'
-							refX='5'
-							refY='5'
-							markerWidth='6'
-							markerHeight='6'
-							orient='auto'>
-							<Path d='M 0 0 L 5 5 L 0 10 z' fill='white' />
-						</Marker>
-						<Marker
-							id='buttEnd'
-							viewBox='0 0 10 10'
-							refX='5'
-							refY='5'
-							markerWidth='4'
-							markerHeight='4'
-							orient='auto'>
-							<Path d='M 5 3 L 5 7' stroke='white' strokeWidth='2' />
-						</Marker>
-					</Defs>
-					<Line
-						pointerEvents='none'
-						x1={linePositions[0][0]}
-						y1={linePositions[0][1]}
-						x2={linePositions[1][0]}
-						y2={linePositions[1][1]}
-						stroke='#FFFFFF'
-						strokeWidth='4'
-						markerStart='url(#arrowStart)'
-						markerEnd='url(#arrowEnd)'
-						opacity={0.8}
-					/>
-				</G>
-			</Svg>
 			<Animated.View
 				{...panResponder.panHandlers}
 				style={{
 					position: "absolute",
-					height: 50,
-					width: 50,
-					top: (linePositions[0][1] + linePositions[1][1]) / 2 - 25,
-					left: (linePositions[0][0] + linePositions[1][0]) / 2 - 25,
-				}}></Animated.View>
+					height: 80,
+					width: 80,
+					top: linePositions[1] - 40,
+					left: linePositions[0] - 40,
+					borderRadius: 100,
+					transform: [{ rotate: `${angleRef.current}rad` }],
+				}}>
+				<Image
+					source={require("../assets/images/watchhand.png")}
+					style={{ width: "100%", height: "100%" }}
+					resizeMode={"contain"}></Image>
+			</Animated.View>
 		</View>
 	);
 };
