@@ -16,7 +16,6 @@ const DragMenu: React.FC<{
 	serviceUsestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
 	centerUsestate: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 }> = ({ serviceUsestate, centerUsestate }) => {
-	console.log("window height is ", Dimensions.get("window").height);
 	const initialYPosition = Dimensions.get("window").height - 150;
 	const minYPosition = initialYPosition * 0.6;
 	const translateY = useRef(new Animated.Value(initialYPosition)).current;
@@ -45,7 +44,6 @@ const DragMenu: React.FC<{
 				translateY.setValue(0);
 			},
 			onPanResponderMove: (event, gestureState) => {
-				console.log(translateY);
 				let newTranslateY = gestureState.dy + translateY._offset;
 				// Restrict movement to maxYPosition
 				if (newTranslateY < minYPosition) {
@@ -102,14 +100,12 @@ const DragMenu: React.FC<{
 				if (gestureState.moveY < minYPosition + 150 && plusOpacityValue === 0) {
 					plusOpacityValue = 0.6;
 					animatePlusSign();
-					console.log("plus shown");
 				} else if (
 					gestureState.moveY > minYPosition + 150 &&
 					plusOpacityValue > 0
 				) {
 					plusOpacityValue = 0;
 					animatePlusSign();
-					console.log("plus hidden");
 				}
 			},
 			onPanResponderRelease: (_, gestureState) => {
@@ -120,7 +116,6 @@ const DragMenu: React.FC<{
 					gestureState.moveY < minYPosition + 150 &&
 					!selected_services.includes(serviceKey)
 				) {
-					console.log("added", serviceKey);
 					setSelected_services((prevData) => [...prevData, serviceKey]); // Update selected_services correctly
 				} else {
 					Animated.spring(pan, {

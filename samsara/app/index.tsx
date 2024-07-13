@@ -86,7 +86,6 @@ export default function Page() {
 		try {
 			const stateJson = JSON.stringify(state);
 			await FileSystem.writeAsStringAsync(fileUri, stateJson);
-			console.log("State saved successfully");
 		} catch (error) {
 			console.error("Error saving state:", error);
 		}
@@ -128,18 +127,12 @@ export default function Page() {
 				throw new Error("End period not found in state");
 			}
 			if (state.selected_services) {
-				console.log("selected services gathered");
 				setSelected_services(state.selected_services);
 			} else {
 				setSelected_services(init_services);
 				throw new Error("Selected services not found in state");
 			}
 
-			console.log(
-				"State loaded successfully with new state: ",
-				state.selected_services,
-				state.end_period
-			);
 		} catch (error) {
 			console.error("Error loading state:", error);
 		}

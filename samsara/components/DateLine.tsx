@@ -14,13 +14,7 @@ const DateLine: React.FC<{
 	radius: number;
 	periodUsestate: [Date, React.Dispatch<React.SetStateAction<Date>>];
 	selected_services: string[];
-	parentLayout: {
-		x: number;
-		y: number;
-		width: number;
-		height: number;
-	};
-}> = ({ radius, periodUsestate, selected_services, parentLayout }) => {
+}> = ({ radius, periodUsestate, selected_services }) => {
 	const today = new Date();
 	const dimensions = Dimensions.get("window");
 	const angleRef = useRef(0);

@@ -6,7 +6,6 @@ import {
 	Image,
 	Animated,
 	Button,
-	LayoutChangeEvent,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { Asset } from "expo-asset";
@@ -45,7 +44,6 @@ const SamsaraWheel: React.FC<{
 	const [endAngle, setEndAngle] = useState(0);
 
 	const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity 0
-	const [layout, setLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
 
 	const cacheImages = async () => {
 		const images = [
@@ -195,11 +193,6 @@ const SamsaraWheel: React.FC<{
 			[x2, y2],
 		];
 	}
-	const handleLayout = (event: LayoutChangeEvent) => {
-		const { x, y, width, height } = event.nativeEvent.layout;
-		setLayout({ x, y, width, height });
-		console.log(event.nativeEvent.layout);
-	};
 
 	return (
 		<View style={styles.container}>
@@ -213,7 +206,7 @@ const SamsaraWheel: React.FC<{
 					shadowOpacity: 0.5,
 					shadowRadius: 5,
 				}}>
-				<View style={styles.container} onLayout={handleLayout}>
+				<View style={styles.container}>
 					<VictoryPie
 						key={data.map((d) => d.x).join(",")}
 						endAngle={endAngle}
@@ -261,7 +254,6 @@ const SamsaraWheel: React.FC<{
 						radius={radius}
 						periodUsestate={periodUsestate}
 						selected_services={selected_services}
-						parentLayout={layout}
 					/>
 
 					<Pressable
