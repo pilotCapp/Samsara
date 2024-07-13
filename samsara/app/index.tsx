@@ -67,20 +67,18 @@ export default function Page() {
 
 	useEffect(() => {
 		console.log("period changed:", end_period);
-		const timedifference = end_period.getTime()-new Date().getTime();
+		const timedifference = end_period.getTime() - new Date().getTime();
 		if (timedifference < 0 || timedifference > 32 * (1000 * 60 * 60 * 24)) {
-			console.log(timedifference)
-			throw new Error("date is invalid")
-		}
-		else if (!selected_services.includes(init_services[0])) {
-
+			console.log(timedifference);
+			throw new Error("date is invalid");
+		} else if (!selected_services.includes(init_services[0])) {
 			const newState = {
 				end_period: end_period, // Use current date for initial state
 				selected_services: selected_services,
 			};
 
 			saveStateToFile(newState);
-			console.log("date set to", end_period)
+			console.log("date set to", end_period);
 		}
 	}, [end_period]);
 
@@ -139,7 +137,8 @@ export default function Page() {
 
 			console.log(
 				"State loaded successfully with new state: ",
-				state.selected_services, state.end_period
+				state.selected_services,
+				state.end_period
 			);
 		} catch (error) {
 			console.error("Error loading state:", error);
@@ -176,23 +175,39 @@ export default function Page() {
 					</View>
 					<View
 						style={{
-							width: "25%",
-							aspectRatio: 2,
-							backgroundColor: selected_service_data[1].colors[0],
 							position: "absolute",
-							alignSelf: "flex-end",
-							top: 0,
-							margin: 10,
-							padding: 8,
-							borderRadius: 10,
-							borderColor: "black",
-							borderWidth: 1,
+							width: "100%",
+							alignItems: "flex-end",
 						}}>
-						<Image
-							source={selected_service_data[1].image}
-							style={{ height: "100%", width: "100%" }}
-							resizeMode={"contain"}
-						/>
+						<View style={{ alignItems: "flex-start" }}>
+							<Text
+								style={{
+									color: "white",
+									opacity: 0.8,
+									fontSize: 12,
+									margin: 5,
+								}}>
+								upcoming:
+							</Text>
+							<View
+								style={{
+									width: "25%",
+									aspectRatio: 2,
+									backgroundColor: selected_service_data[1].colors[0],
+									borderRadius: 10,
+									borderColor: "white",
+									borderWidth: 1,
+									alignSelf: "flex-end",
+									padding: 10,
+									marginRight: 15,
+								}}>
+								<Image
+									source={selected_service_data[1].image}
+									style={{ height: "100%", width: "100%" }}
+									resizeMode={"contain"}
+								/>
+							</View>
+						</View>
 					</View>
 				</LinearGradient>
 			) : (
