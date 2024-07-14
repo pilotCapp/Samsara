@@ -7,11 +7,13 @@ const EditComponents: React.FC<{
 	Radius: number;
 	service_usestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
 	angle_usestate: [number, React.Dispatch<React.SetStateAction<number>>];
-}> = ({ Radius, service_usestate, angle_usestate }) => {
+	period_usestate: [Date, React.Dispatch<React.SetStateAction<Date>>];
+}> = ({ Radius, service_usestate, angle_usestate, period_usestate }) => {
 	Radius = Radius * 1.1;
 	const smallRadius = Math.min(Radius / 10, 20);
 	const [selected_services, setSelected_services] = service_usestate;
 	const [endAngle, setEndAngle] = angle_usestate;
+	const [end_period, setEnd_period] = period_usestate;
 
 	// Helper function to calculate position
 	const calculatePosition = (angle: number, radius: number) => {
@@ -61,7 +63,12 @@ const EditComponents: React.FC<{
 						(item) => item !== selected_services[index]
 					);
 					setSelected_services(new_services);
+
 					setEndAngle((360 / selected_services.length) * index);
+
+					const today = new Date();
+					setEnd_period(new Date(today.getTime() + 30 * 1000 * 60 * 60 * 24));
+					console.log("end period reset");
 				}
 			});
 		} else {

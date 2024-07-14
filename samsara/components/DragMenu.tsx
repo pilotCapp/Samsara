@@ -15,7 +15,9 @@ import { Service } from "@/types";
 const DragMenu: React.FC<{
 	serviceUsestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
 	centerUsestate: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-}> = ({ serviceUsestate, centerUsestate }) => {
+	angleUsestate: [number, React.Dispatch<React.SetStateAction<number>>];
+
+}> = ({ serviceUsestate, centerUsestate, angleUsestate }) => {
 	const initialYPosition = Dimensions.get("window").height - 150;
 	const minYPosition = initialYPosition * 0.6;
 	const translateY = useRef(new Animated.Value(initialYPosition)).current;
@@ -116,7 +118,9 @@ const DragMenu: React.FC<{
 					gestureState.moveY < minYPosition + 150 &&
 					!selected_services.includes(serviceKey)
 				) {
+
 					setSelected_services((prevData) => [...prevData, serviceKey]); // Update selected_services correctly
+					angleUsestate[1](0)
 				} else {
 					Animated.spring(pan, {
 						toValue: originalPosition,

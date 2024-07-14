@@ -30,7 +30,8 @@ const SamsaraWheel: React.FC<{
 	serviceUsestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
 	centerUsestate: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 	periodUsestate: [Date, React.Dispatch<React.SetStateAction<Date>>];
-}> = ({ serviceUsestate, centerUsestate, periodUsestate }) => {
+	angleUsestate: [number, React.Dispatch<React.SetStateAction<number>>];
+}> = ({ serviceUsestate, centerUsestate, periodUsestate, angleUsestate }) => {
 	const today = new Date();
 	const dimensions = Dimensions.get("window");
 	const radius = dimensions.width / 3;
@@ -41,7 +42,7 @@ const SamsaraWheel: React.FC<{
 	const [selected_services, setSelected_services] = serviceUsestate;
 	const [addServiceVisual, setAddServiceVisual] = centerUsestate;
 	const [data, setData] = useState(graphicData);
-	const [endAngle, setEndAngle] = useState(0);
+	const [endAngle, setEndAngle] = angleUsestate;
 
 	const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity 0
 
@@ -129,7 +130,7 @@ const SamsaraWheel: React.FC<{
 			} else {
 				setEndAngle(359);
 			}
-		}, 1);
+		}, 10);
 	}, [endAngle]);
 
 	useEffect(() => {}, [data]);
@@ -305,6 +306,7 @@ const SamsaraWheel: React.FC<{
 						Radius={radius}
 						service_usestate={[selected_services, setSelected_services]}
 						angle_usestate={[endAngle, setEndAngle]}
+						period_usestate={periodUsestate}
 					/>
 				</Animated.View>
 			</View>

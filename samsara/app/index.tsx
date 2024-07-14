@@ -20,7 +20,7 @@ export default function Page() {
 	});
 
 	const init_services: string[] = ["init"];
-
+	const [endAngle, setEndAngle] = useState(0);
 	const [selected_services, setSelected_services] =
 		useState<string[]>(init_services);
 	const [selected_service_data, setSelected_service_data] = useState<
@@ -173,6 +173,7 @@ export default function Page() {
 							serviceUsestate={[selected_services, setSelected_services]}
 							centerUsestate={[addServiceVisual, setAddServiceVisual]}
 							periodUsestate={[end_period, setEnd_period]}
+							angleUsestate={[endAngle, setEndAngle]}
 						/>
 					</View>
 					<View
@@ -243,6 +244,7 @@ export default function Page() {
 			<DragMenu
 				serviceUsestate={[selected_services, setSelected_services]}
 				centerUsestate={[addServiceVisual, setAddServiceVisual]}
+				angleUsestate={[endAngle, setEndAngle]}
 			/>
 		</View>
 	);

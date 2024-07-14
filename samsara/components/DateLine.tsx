@@ -30,21 +30,17 @@ const DateLine: React.FC<{
 	const periodUsestateRef = useRef(periodUsestate);
 
 	useEffect(() => {
-		periodUsestateRef.current = periodUsestate;
-	}, [periodUsestate[0]]);
-
-	useEffect(() => {
 		selectedServicesRef.current = selected_services;
-		const angle = getAngleFromDate(periodUsestate[0]);
+		periodUsestateRef.current = periodUsestate;
+		const angle = getAngleFromDate(periodUsestateRef.current[0]);
 		angleRef.current = angle;
 		setLinePositions(presentLinePositions(angle));
-	}, [selected_services]);
+	}, [selected_services, periodUsestate[0]]);
 
 	const panResponder = useRef(
 		PanResponder.create({
 			onStartShouldSetPanResponder: () => true,
 			onPanResponderGrant: () => {
-				console.log(dateViewOpacity);
 				setIsDragging(true);
 				Animated.timing(dateViewOpacity, {
 					toValue: 1,
@@ -89,7 +85,7 @@ const DateLine: React.FC<{
 		);
 		const angle =
 			(((2 * Math.PI) / selectedServicesRef.current.length) * timedifference) /
-			32;
+			30;
 
 		return angle;
 	}
@@ -97,12 +93,6 @@ const DateLine: React.FC<{
 	function getDateFromAngle(angle: number) {
 		const serviceAngle = (2 * Math.PI) / selectedServicesRef.current.length;
 		const timedifference = 30 - (angle / serviceAngle) * 30;
-		console.log(
-			angle,
-			serviceAngle,
-			selectedServicesRef.current.length,
-			timedifference
-		);
 		const daysDifference = Math.max(
 			0,
 			Math.min(30, Math.round(timedifference))
