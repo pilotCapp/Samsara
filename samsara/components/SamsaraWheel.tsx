@@ -114,13 +114,21 @@ const SamsaraWheel: React.FC<{
 
 	useEffect(() => {
 		setTimeout(() => {
-			setEndAngle(360);
+			if (selected_services.length > 1) {
+				setEndAngle(360);
+			} else {
+				setEndAngle(359);
+			}
 		}, 100);
 		initiallizeData();
 	}, []);
 	useEffect(() => {
 		setTimeout(() => {
-			setEndAngle(360);
+			if (selected_services.length > 1) {
+				setEndAngle(360);
+			} else {
+				setEndAngle(359);
+			}
 		}, 1);
 	}, [endAngle]);
 
