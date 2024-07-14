@@ -19,6 +19,7 @@ const DateLine: React.FC<{
 	const dimensions = Dimensions.get("window");
 	const angleRef = useRef(0);
 	const selectedServicesRef = useRef(selected_services);
+
 	const dateViewOpacity = useRef(new Animated.Value(0)).current;
 	const [isDragging, setIsDragging] = useState(false);
 	const c = 1000 * 60 * 60 * 24;
@@ -54,8 +55,8 @@ const DateLine: React.FC<{
 			onPanResponderMove: (event, gestureState) => {
 				const angle =
 					-Math.atan2(
-						gestureState.moveX - dimensions.width / 2 - 25,
-						gestureState.moveY - dimensions.height / 2 - 25
+						gestureState.moveX - dimensions.width / 2 - 40,
+						gestureState.moveY - dimensions.height / 2 - 40
 					) + Math.PI;
 				if (
 					angle > 0 &&

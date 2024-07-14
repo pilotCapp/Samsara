@@ -202,6 +202,12 @@ export default function Page() {
 									alignSelf: "flex-end",
 									padding: 10,
 									marginRight: 15,
+									shadowOffset: {
+										width: 0,
+										height: 3,
+									},
+									shadowOpacity: 0.5,
+									shadowRadius: 5,
 								}}>
 								<Image
 									source={selected_service_data[1].image}
