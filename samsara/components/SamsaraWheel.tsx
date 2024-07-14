@@ -234,7 +234,8 @@ const SamsaraWheel: React.FC<{
 									index === 0 ? 1 : 0.9,
 								stroke: ({ index }: { index: number }) =>
 									index === 0 ? "gold" : "none",
-								strokeWidth: 2,
+								strokeWidth: 3,
+								strokeOpacity: 0.3,
 							} as any,
 						}}
 						padAngle={3}
