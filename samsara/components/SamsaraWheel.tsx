@@ -39,6 +39,7 @@ const SamsaraWheel: React.FC<{
 	let graphicData: DataItem[] = [];
 
 	const [editMode, setEditMode] = useState(init_edit);
+	const [edit_index, setEdit_index] = useState<number | null>(1);
 	const [selected_services, setSelected_services] = serviceUsestate;
 	const [addServiceVisual, setAddServiceVisual] = centerUsestate;
 	const [data, setData] = useState(graphicData);
@@ -137,6 +138,7 @@ const SamsaraWheel: React.FC<{
 
 	useEffect(() => {
 		alterData();
+		setEdit_index(null);
 	}, [selected_services]);
 
 	const sectionSelectione2 = (name: string) => {
@@ -166,7 +168,7 @@ const SamsaraWheel: React.FC<{
 		console.log(`Function 1 took ${elapsedTime} milliseconds`);
 	};
 
-	function sectionSelection(name: string) {
+	function sectionSelection(name: string, index: number) {
 		setData((prevData) =>
 			prevData.map((item) =>
 				item.x === name
@@ -174,6 +176,8 @@ const SamsaraWheel: React.FC<{
 					: { ...item, selected: false }
 			)
 		);
+
+		setEdit_index((prevIndex) => (index == prevIndex ? null : index));
 	}
 
 	function getSectionAngle() {
@@ -253,7 +257,7 @@ const SamsaraWheel: React.FC<{
 								target: "data",
 								eventHandlers: {
 									onPress: (event, props) => {
-										sectionSelection(props.datum.x);
+										sectionSelection(props.datum.x, props.index);
 									},
 								},
 							},
@@ -265,50 +269,14 @@ const SamsaraWheel: React.FC<{
 						periodUsestate={periodUsestate}
 						selected_services={selected_services}
 					/>
-
-					<Pressable
-						onPress={toggleEdit}
-						style={{
-							position: "absolute",
-							alignItems: "center",
-							justifyContent: "center",
-							height: radius / 2,
-							aspectRatio: 1,
-						}}>
-						<Image
-							source={require("../assets/images/calendar.png")}
-							resizeMode={"contain"}
-							style={{
-								width: "100%",
-								height: "100%",
-							}}
-						/>
-					</Pressable>
 				</View>
-				<Animated.View
-					style={[
-						styles.container,
-						{
-							opacity: fadeAnim,
-							transform: [
-								{
-									scale: fadeAnim.interpolate({
-										inputRange: [0, 1],
-										outputRange: [0.7, 1],
-									}),
-								},
-							],
-
-							pointerEvents: editMode ? "box-none" : "none",
-						},
-					]}>
-					<EditComponents
-						Radius={radius}
-						service_usestate={[selected_services, setSelected_services]}
-						angle_usestate={[endAngle, setEndAngle]}
-						period_usestate={periodUsestate}
-					/>
-				</Animated.View>
+				<EditComponents
+					Radius={radius}
+					service_usestate={[selected_services, setSelected_services]}
+					angle_usestate={[endAngle, setEndAngle]}
+					period_usestate={periodUsestate}
+					edit_usestate={[edit_index, setEdit_index]}
+				/>
 			</View>
 		</View>
 	);
