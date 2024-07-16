@@ -162,7 +162,10 @@ export default function Page() {
 							title: "main_header",
 							header: () =>
 								selected_services.length > 0 ? (
-									<Header service_data={selected_service_data[0]} />
+									<Header
+										service_data={selected_service_data[0]}
+										period_usestate={[end_period, setEnd_period]}
+									/>
 								) : (
 									<View />
 								),
@@ -182,7 +185,10 @@ export default function Page() {
 							width: "100%",
 							alignItems: "flex-end",
 						}}>
-						<View style={{ alignItems: "flex-start" }}>
+						<View
+							style={{
+								alignItems: "flex-start",
+							}}>
 							<Text
 								style={{
 									color: "white",
