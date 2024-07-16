@@ -129,41 +129,83 @@ const DateLine: React.FC<{
 						transform: [{ rotate: `${angleRef.current}rad` }],
 					}}
 					resizeMode={"contain"}></Image>
-				{isDragging ? (
-					<Animated.View
+			</View>
+			{isDragging ? (
+				<Animated.View
+					style={{
+						position: "absolute",
+						opacity: dateViewOpacity,
+						height: 100,
+						width: 100,
+						top:
+							radius * 1.1 -
+							100 -
+							(radius - 100) *
+								Math.cos((2 * Math.PI) / selected_services.length) +
+							50,
+						left:
+							radius * 1.1 -
+							100 +
+							(radius - 100) *
+								Math.sin((2 * Math.PI) / selected_services.length) +
+							50,
+					}}>
+					<Image
+						source={require("../assets/images/dateline_calendar.png")}
+						resizeMode={"contain"}
+						style={{ width: "100%", height: "100%" }}
+					/>
+					<View
 						style={{
 							position: "absolute",
-							opacity: dateViewOpacity,
-							height: 100,
-							width: 100,
-							top: -80,
-							left: 80,
+							height: "100%",
+							width: "100%",
 						}}>
-						<Image
-							source={require("../assets/images/dateline_calendar.png")}
-							resizeMode={"contain"}
-							style={{ width: "100%", height: "100%" }}
-						/>
-						<View
+						<Animated.Text
 							style={{
 								position: "absolute",
-								flex: 1,
-								alignItems: "center",
-								justifyContent: "center",
-								height: "100%",
-								width: "100%",
+								color: "white",
+								padding: 10,
+								fontFamily: "inter",
+								fontWeight: "bold",
+								fontSize: 15,
+								left: 47,
+								top: 7,
 							}}>
-							<Animated.Text style={{ color: "white", padding: 10 }}>
-								{getDateFromAngle(angleRef.current).toLocaleString("default", {
-									weekday: "long",
-									day: "2-digit",
-									month: "long",
-								})}
-							</Animated.Text>
-						</View>
-					</Animated.View>
-				) : null}
-			</View>
+							{getDateFromAngle(angleRef.current).toLocaleString("default", {
+								month: "short",
+							})}
+						</Animated.Text>
+						<Animated.Text
+							style={{
+								position: "absolute",
+								color: "white",
+								padding: 10,
+								fontFamily: "inter",
+								top: 25,
+								left: 0,
+							}}>
+							{getDateFromAngle(angleRef.current).toLocaleString("default", {
+								weekday: "short",
+							})}
+						</Animated.Text>
+						<Animated.Text
+							style={{
+								position: "absolute",
+								color: "white",
+								padding: 10,
+								fontFamily: "inter",
+								fontSize: 40,
+								top: 30,
+								left: 10,
+							}}>
+							{getDateFromAngle(angleRef.current).toLocaleString("default", {
+								day: "2-digit",
+							})}
+						</Animated.Text>
+					</View>
+				</Animated.View>
+			) : null}
 		</View>
 	);
 };
