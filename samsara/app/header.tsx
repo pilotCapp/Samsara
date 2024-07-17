@@ -9,15 +9,19 @@ import { Image, ImageTransition } from "expo-image";
 const Header = ({
 	service_data,
 	period_usestate,
+	notification_usestate,
 }: {
 	service_data: Service;
 	period_usestate: [Date, React.Dispatch<React.SetStateAction<Date>>];
+	notification_usestate: [
+		boolean,
+		React.Dispatch<React.SetStateAction<boolean>>
+	];
 }) => {
 	const days_left = Math.round(
 		(period_usestate[0].getTime() - new Date().getTime()) /
 			(1000 * 60 * 60 * 24)
 	);
-	const notify_usestate = useState(false);
 
 	return (
 		<LinearGradient
@@ -107,14 +111,14 @@ const Header = ({
 					margin: 20,
 				}}
 				onPress={() => {
-					if (notify_usestate !== undefined) {
-						notify_usestate[1]((prevValue) => !prevValue);
+					if (notification_usestate !== undefined) {
+						notification_usestate[1]((prevValue) => !prevValue);
 					}
 				}}>
 				<Image
 					style={{ height: "50%", width: "50%" }}
 					source={
-						notify_usestate !== undefined && notify_usestate[0]
+						notification_usestate !== undefined && notification_usestate[0]
 							? require("../assets/images/bell_on.png")
 							: require("../assets/images/bell_off.png")
 					}
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
 		fontSize: 40,
 		fontWeight: "bold",
 	},
-	logo: { height: "60%", width: "40%" },
+	logo: { height: "80%", width: "40%" },
 });
 
 export default Header;

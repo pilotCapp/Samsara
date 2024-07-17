@@ -29,9 +29,23 @@ export default function Page() {
 
 	const [addServiceVisual, setAddServiceVisual] = useState(false);
 
+	const [notifications, setNotifications] = useState(true);
+	const [notificationDates, setNotificationDates] = useState<Date[]>([]);
+
 	useEffect(() => {
 		loadStateFromFile();
 	}, []);
+
+	useEffect(() => {
+		if (!selected_services.includes(init_services[0])) {
+			const newState = {
+				end_period: end_period, // Use current date for initial state
+				selected_services: selected_services,
+				notifications: notifications,
+			};
+			saveStateToFile(newState);
+		}
+	}, [notifications]);
 
 	useEffect(() => {
 		if (selected_services.length > 1) {
@@ -58,6 +72,7 @@ export default function Page() {
 			const newState = {
 				end_period: end_period, // Use current date for initial state
 				selected_services: selected_services,
+				notifications: notifications,
 			};
 
 			saveStateToFile(newState);
@@ -80,6 +95,7 @@ export default function Page() {
 			const newState = {
 				end_period: end_period, // Use current date for initial state
 				selected_services: selected_services,
+				notifications: notifications,
 			};
 
 			saveStateToFile(newState);
@@ -107,6 +123,7 @@ export default function Page() {
 
 			if (!fileInfo.exists) {
 				console.log("File does not exist, creating with default values.");
+				const notifications = true;
 
 				const currentDate = new Date();
 
@@ -116,12 +133,14 @@ export default function Page() {
 				const defaultState = {
 					end_period: futureDate, // Use current date for initial state
 					selected_services: init_services,
+					notifications: notifications,
 				};
 
 				saveStateToFile(defaultState); // Create the file with default values
 
 				setEnd_period(new Date(defaultState.end_period));
 				setSelected_services(defaultState.selected_services);
+				setNotifications(defaultState.notifications);
 
 				return;
 			}
@@ -141,6 +160,13 @@ export default function Page() {
 			} else {
 				setSelected_services(init_services);
 				throw new Error("Selected services not found in state");
+			}
+			if (typeof state.notifications !== "undefined") {
+				setNotifications(state.notifications);
+			} else {
+				setNotifications(true);
+				console.log(state);
+				throw new Error("notifications not found in state");
 			}
 		} catch (error) {
 			console.error("Error loading state:", error);
@@ -165,6 +191,7 @@ export default function Page() {
 									<Header
 										service_data={selected_service_data[0]}
 										period_usestate={[end_period, setEnd_period]}
+										notification_usestate={[notifications, setNotifications]}
 									/>
 								) : (
 									<View />
