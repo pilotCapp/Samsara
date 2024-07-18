@@ -8,6 +8,7 @@ import { services } from "@/constants/services";
 import { LinearGradient } from "expo-linear-gradient";
 import * as FileSystem from "expo-file-system";
 import DragMenu from "@/components/DragMenu";
+import initBackgroundFetch from "@/scripts/background";
 
 export default function Page() {
 	const fileUri = FileSystem.documentDirectory + "state.json";
@@ -142,6 +143,9 @@ export default function Page() {
 				setSelected_services(defaultState.selected_services);
 				setNotifications(defaultState.notifications);
 
+				//create bacground fetch upon file creation
+				const status = await initBackgroundFetch;
+				console.log("background fetch created with status", status);
 				return;
 			}
 
