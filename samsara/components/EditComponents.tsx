@@ -1,14 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-	View,
-	Text,
-	StyleSheet,
-	Pressable,
-	Alert,
-	Animated,
-} from "react-native";
-import Svg, { G, Circle, Defs } from "react-native-svg";
-import { Line } from "victory-native";
+import { View, StyleSheet, Pressable, Alert } from "react-native";
 
 const EditComponents: React.FC<{
 	Radius: number;
@@ -152,13 +143,6 @@ const EditComponents: React.FC<{
 const styles = StyleSheet.create({
 	container: {
 		position: "absolute",
-		justifyContent: "center",
-		alignItems: "center",
-		pointerEvents: "box-none",
-	},
-	svg_container: {
-		height: "100%",
-		width: "100%",
 		justifyContent: "center",
 		alignItems: "center",
 		pointerEvents: "box-none",

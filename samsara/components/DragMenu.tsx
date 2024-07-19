@@ -10,13 +10,11 @@ import {
 	Text,
 } from "react-native";
 import { services } from "@/constants/services";
-import { Service } from "@/types";
 
 const DragMenu: React.FC<{
 	serviceUsestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
 	centerUsestate: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 	angleUsestate: [number, React.Dispatch<React.SetStateAction<number>>];
-
 }> = ({ serviceUsestate, centerUsestate, angleUsestate }) => {
 	const initialYPosition = Dimensions.get("window").height - 150;
 	const minYPosition = initialYPosition * 0.6;
@@ -24,8 +22,6 @@ const DragMenu: React.FC<{
 	const isChildActive = useRef(false);
 
 	const [selected_services, setSelected_services] = serviceUsestate;
-
-	//const [addServiceVisual, setAddServiceVisual] = centerUsestate;
 
 	let plusOpacityValue = 0; // Opacity of the plus sign
 	const plusOpacity = useRef(new Animated.Value(0)).current; // Opacity of the plus sign
@@ -118,9 +114,8 @@ const DragMenu: React.FC<{
 					gestureState.moveY < minYPosition + 150 &&
 					!selected_services.includes(serviceKey)
 				) {
-
 					setSelected_services((prevData) => [...prevData, serviceKey]); // Update selected_services correctly
-					angleUsestate[1](0)
+					angleUsestate[1](0);
 				} else {
 					Animated.spring(pan, {
 						toValue: originalPosition,
@@ -257,9 +252,6 @@ const styles = StyleSheet.create({
 	text: {
 		color: "white",
 		opacity: 0.5,
-	},
-	tag_text: {
-		fontSize: 20,
 	},
 });
 

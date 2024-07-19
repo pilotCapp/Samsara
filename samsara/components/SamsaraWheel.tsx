@@ -189,24 +189,6 @@ const SamsaraWheel: React.FC<{
 		return (sectiondegree * timedifference) / 32;
 	}
 
-	function toggleEdit() {
-		setEditMode(!editMode);
-	}
-
-	function presentLinePositions() {
-		// Convert angle to radians
-		const angleInRadians = (getSectionAngle() - 90) * (Math.PI / 180);
-		// Calculate start and end points for the line
-		const x1 = radius * 1.1 + (radius + 10) * Math.cos(angleInRadians);
-		const y1 = radius * 1.1 + (radius + 10) * Math.sin(angleInRadians);
-		const x2 = radius * 1.1 + (radius - 40) * Math.cos(angleInRadians); // Adjust the length of the line
-		const y2 = radius * 1.1 + (radius - 40) * Math.sin(angleInRadians);
-		return [
-			[x1, y1],
-			[x2, y2],
-		];
-	}
-
 	return (
 		<View style={styles.container}>
 			<View
@@ -283,11 +265,6 @@ const SamsaraWheel: React.FC<{
 };
 
 const styles = StyleSheet.create({
-	frame: {
-		justifyContent: "center",
-		alignItems: "center",
-		flex: 1,
-	},
 	container: {
 		position: "absolute",
 		justifyContent: "center",
@@ -296,16 +273,6 @@ const styles = StyleSheet.create({
 		pointerEvents: "box-none",
 		borderRadius: 100,
 	},
-	svg_container: {
-		position: "absolute",
-		justifyContent: "center",
-		alignItems: "center",
-		width: "100%",
-		height: "100%",
-		pointerEvents: "box-none",
-		borderRadius: 100,
-	},
 });
 
 export default SamsaraWheel;
-//<DateLine radius={radius} angle={getSectionAngle()} />

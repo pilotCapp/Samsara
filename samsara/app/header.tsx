@@ -47,6 +47,12 @@ const Header = ({
 					justifyContent: "center",
 					paddingRight: 10,
 					paddingLeft: 10,
+					shadowOffset: {
+						width: 0,
+						height: 3,
+					},
+					shadowOpacity: 0.5,
+					shadowRadius: 5,
 				}}>
 				<View
 					style={{
@@ -116,7 +122,16 @@ const Header = ({
 					}
 				}}>
 				<Image
-					style={{ height: "50%", width: "50%" }}
+					style={{
+						height: "50%",
+						width: "50%",
+						shadowOffset: {
+							width: 0,
+							height: 3,
+						},
+						shadowOpacity: notification_usestate ? 0.5 : 0,
+						shadowRadius: 5,
+					}}
 					source={
 						notification_usestate !== undefined && notification_usestate[0]
 							? require("../assets/images/bell_on.png")
@@ -136,12 +151,17 @@ const styles = StyleSheet.create({
 		height: 150,
 		paddingBottom: 20,
 	},
-	title: {
-		color: "white",
-		fontSize: 40,
-		fontWeight: "bold",
+	logo: {
+		height: "80%",
+		width: "40%",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowOpacity: 0.5,
+		shadowRadius: 1,
+		margin: 10,
 	},
-	logo: { height: "80%", width: "40%" },
 });
 
 export default Header;

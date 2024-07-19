@@ -1,4 +1,4 @@
-import { Button, Pressable, StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import SamsaraWheel from "@/components/SamsaraWheel";
 import Header from "./header";
 import { Stack } from "expo-router";
@@ -14,9 +14,8 @@ export default function Page() {
 	const fileUri = FileSystem.documentDirectory + "state.json";
 
 	const [end_period, setEnd_period] = useState(() => {
-		const today = new Date();
-		const futureDate = new Date(today);
-		futureDate.setDate(futureDate.getDate() + 20);
+		const futureDate = new Date();
+		futureDate.setDate(futureDate.getDate() + 30);
 		return futureDate;
 	});
 
@@ -34,7 +33,7 @@ export default function Page() {
 	const [notificationDates, setNotificationDates] = useState<Date[]>([]);
 
 	useEffect(() => {
-		testFileUpdate();
+		//testFileUpdate();
 		loadStateFromFile();
 	}, []);
 
@@ -370,42 +369,3 @@ const styles = StyleSheet.create({
 		shadowRadius: 5,
 	},
 });
-
-const serviceStyles = StyleSheet.create({
-	prime: {
-		backgroundColor: "#CFE8FF",
-	},
-	disney: {
-		backgroundColor: "#1B1F4A",
-	},
-	netflix: {
-		backgroundColor: "#8B3C3C",
-	},
-	roku: {
-		backgroundColor: "#6f1ab1",
-	},
-	hulu: {
-		backgroundColor: "#1ce783",
-	},
-	hbo: {
-		backgroundColor: "#000",
-	},
-	apple: {
-		backgroundColor: "#000",
-	},
-	youtube: {
-		backgroundColor: "#ff0000",
-	},
-	paramount: {
-		backgroundColor: "#000",
-	},
-});
-
-// selected_service_data
-// 					? {
-// 							flex: 1,
-// 							alignItems: "center",
-// 							padding: 24,
-// 							...serviceStyles[selected_services[0].toLowerCase()],
-// 					  }
-// 					: styles.container

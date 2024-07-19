@@ -1,4 +1,3 @@
-import { transform } from "@babel/core";
 import React, { useEffect, useRef, useState } from "react";
 import {
 	Animated,
@@ -8,22 +7,20 @@ import {
 	Dimensions,
 	Image,
 } from "react-native";
-import Svg, { Defs, G, Line, Polyline, Marker, Path } from "react-native-svg"; // Use `react-native-svg` for React Native
 
 const DateLine: React.FC<{
 	radius: number;
 	periodUsestate: [Date, React.Dispatch<React.SetStateAction<Date>>];
 	selected_services: string[];
 }> = ({ radius, periodUsestate, selected_services }) => {
+	const c = 1000 * 60 * 60 * 24;
+
 	const today = new Date();
 	const dimensions = Dimensions.get("window");
 	const angleRef = useRef(0);
 	const selectedServicesRef = useRef(selected_services);
-
 	const dateViewOpacity = useRef(new Animated.Value(0)).current;
 	const [isDragging, setIsDragging] = useState(false);
-	const c = 1000 * 60 * 60 * 24;
-
 	const [linePositions, setLinePositions] = useState<number[]>(
 		presentLinePositions(getAngleFromDate(periodUsestate[0]))
 	);
