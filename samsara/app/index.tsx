@@ -34,9 +34,19 @@ export default function Page() {
 	const [notificationDates, setNotificationDates] = useState<Date[]>([]);
 
 	useEffect(() => {
+		testFileUpdate();
 		loadStateFromFile();
 	}, []);
 
+	async function testFileUpdate() {
+		const endPeriod = new Date(Date.now() - 1000 * 60 * 60 * 24 * 61);
+		endPeriod.setHours(23, 59, 59, 999);
+		await saveStateToFile({
+			selected_services: ["netflix", "disney", "hulu"],
+			end_period: endPeriod,
+			notifications: true,
+		});
+	}
 	useEffect(() => {
 		if (!selected_services.includes(init_services[0])) {
 			const newState = {
@@ -84,7 +94,7 @@ export default function Page() {
 		const today = new Date();
 		today.setHours(23, 59, 59, 999);
 		const timedifference = end_period.getTime() - today.getTime();
-		if (timedifference < 0 || timedifference > 30 * (1000 * 60 * 60 * 24)) {
+		if (timedifference < 0 || timedifference > 32 * (1000 * 60 * 60 * 24)) {
 			console.log(
 				"end period",
 				end_period,
@@ -131,6 +141,8 @@ export default function Page() {
 				// Step 2: Add 30 days
 				const futureDate = new Date();
 				futureDate.setDate(currentDate.getDate() + 30);
+				futureDate.setHours(23, 59, 59, 999);
+
 				const defaultState = {
 					end_period: futureDate, // Use current date for initial state
 					selected_services: init_services,
@@ -154,7 +166,41 @@ export default function Page() {
 
 			// Convert string back to Date object
 			if (state.end_period) {
-				setEnd_period(new Date(state.end_period));
+				const endPeriod = new Date(state.end_period);
+				const now = new Date();
+				if (new Date(state.end_period) < new Date()) {
+					console.log("End period reached, resetting state");
+					const monthsDiff = Math.ceil(
+						(now.getTime() - endPeriod.getTime()) / (1000 * 60 * 60 * 24 * 30)
+					);
+					console.log("montsDiff", monthsDiff);
+					const new_period = new Date(
+						endPeriod.setMonth(endPeriod.getMonth() + monthsDiff)
+					);
+					new_period.setHours(23, 59, 59, 999);
+
+					let new_services;
+					if (state.selected_services) {
+						new_services = state.selected_services;
+					} else {
+						new_services = init_services;
+					}
+					if (new_services.length > 1) {
+						for (let i = 0; i < monthsDiff; i++) {
+							const firstElement = new_services.shift();
+							if (firstElement != undefined) {
+								new_services.push(firstElement);
+							}
+						}
+					}
+					console.log("new period", new_period, "new services", new_services);
+					setEnd_period(new_period);
+					setSelected_services(new_services);
+					setNotifications(true);
+					return;
+				} else {
+					setEnd_period(new Date(state.end_period));
+				}
 			} else {
 				setEnd_period(new Date());
 				throw new Error("End period not found in state");
@@ -169,7 +215,6 @@ export default function Page() {
 				setNotifications(state.notifications);
 			} else {
 				setNotifications(true);
-				console.log(state);
 				throw new Error("notifications not found in state");
 			}
 		} catch (error) {
