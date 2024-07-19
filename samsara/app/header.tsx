@@ -111,34 +111,40 @@ const Header = ({
 					position: "absolute",
 					alignSelf: "flex-start",
 					height: "100%",
-					width: "30%",
+					width: "20%",
 					alignItems: "flex-start",
 					justifyContent: "center",
-					margin: 20,
+					padding: 30,
 				}}
 				onPress={() => {
 					if (notification_usestate !== undefined) {
 						notification_usestate[1]((prevValue) => !prevValue);
 					}
 				}}>
-				<Image
+				<View
 					style={{
-						height: "50%",
-						width: "50%",
+						height: "100%",
+						width: "100%",
 						shadowOffset: {
 							width: 0,
 							height: 3,
 						},
 						shadowOpacity: notification_usestate ? 0.5 : 0,
 						shadowRadius: 5,
-					}}
-					source={
-						notification_usestate !== undefined && notification_usestate[0]
-							? require("../assets/images/bell_on.png")
-							: require("../assets/images/bell_off.png")
-					}
-					contentFit='contain'
-				/>
+					}}>
+					<Image
+						style={{
+							height: "100%",
+							width: "100%",
+						}}
+						source={
+							notification_usestate !== undefined && notification_usestate[0]
+								? require("../assets/images/bell_on.png")
+								: require("../assets/images/bell_off.png")
+						}
+						contentFit='contain'
+					/>
+				</View>
 			</Pressable>
 		</LinearGradient>
 	);

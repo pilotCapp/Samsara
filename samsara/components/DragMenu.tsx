@@ -237,9 +237,9 @@ const styles = StyleSheet.create({
 	},
 	tag: {
 		position: "absolute",
-		top: -50,
+		top: -100,
 		left: 20,
-		height: 50,
+		height: 100,
 		width: "30%",
 		backgroundColor: "rgba(173, 216, 230, 0.5)",
 		borderTopLeftRadius: 10,
@@ -248,6 +248,11 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		flex: 1,
+		borderColor: "gray",
+		borderRadius: 1,
+		borderWidth: 1,
+		borderBottomColor: "transparent",
+		borderStyle: "solid",
 	},
 	text: {
 		color: "white",

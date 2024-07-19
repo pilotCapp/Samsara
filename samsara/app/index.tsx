@@ -347,7 +347,16 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	subtitle: {
-		fontSize: 36,
+		fontSize: 46,
+		fontWeight: "bold",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		fontFamily: "inter",
+		opacity: 0.8,
 	},
 	no_services_header: {
 		flex: 1,
