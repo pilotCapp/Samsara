@@ -146,7 +146,7 @@ export default function Page() {
 
 				const defaultState = {
 					end_period: futureDate, // Use current date for initial state
-					selected_services: init_services,
+					selected_services: [],
 					notifications: notifications,
 				};
 
