@@ -34,6 +34,13 @@ const DragMenu: React.FC<{
 		}).start();
 	};
 
+	function animateY(Ypos: number) {
+		Animated.timing(translateY, {
+			toValue: Ypos,
+			useNativeDriver: true,
+		}).start();
+	}
+
 	const containerResponder = useRef(
 		PanResponder.create({
 			onStartShouldSetPanResponder: () => !isChildActive.current,
@@ -52,17 +59,18 @@ const DragMenu: React.FC<{
 			onPanResponderRelease: (_, gestureState) => {
 				translateY.flattenOffset();
 				if (gestureState.dy < -50) {
-					Animated.spring(translateY, {
-						toValue: minYPosition,
-						useNativeDriver: true,
-						speed: 20,
-					}).start();
+					animateY(minYPosition);
+				} else if (
+					Math.abs(gestureState.dx) < 5 &&
+					Math.abs(gestureState.dy) < 5
+				) {
+					if (translateY._value === minYPosition) {
+						animateY(initialYPosition);
+					} else {
+						animateY(minYPosition);
+					}
 				} else {
-					Animated.spring(translateY, {
-						toValue: initialYPosition,
-						useNativeDriver: true,
-						speed: 20,
-					}).start();
+					animateY(initialYPosition);
 				}
 			},
 		})
@@ -84,7 +92,7 @@ const DragMenu: React.FC<{
 					y: pan.y._value,
 				});
 				pan.setValue({ x: 0, y: 0 });
-				Animated.spring(scale, {
+				Animated.timing(scale, {
 					toValue: 0.8,
 					useNativeDriver: true,
 				}).start();
@@ -117,16 +125,14 @@ const DragMenu: React.FC<{
 					setSelected_services((prevData) => [...prevData, serviceKey]); // Update selected_services correctly
 					angleUsestate[1](0);
 				} else {
-					Animated.spring(pan, {
+					Animated.timing(pan, {
 						toValue: originalPosition,
 						useNativeDriver: true,
-						speed: 20,
 					}).start();
 				}
-				Animated.spring(scale, {
+				Animated.timing(scale, {
 					toValue: 1,
 					useNativeDriver: true,
-					speed: 10,
 				}).start();
 
 				isChildActive.current = false;
