@@ -100,7 +100,9 @@ export default function Page() {
 				"is not valid with timedifference",
 				timedifference
 			);
-			throw new Error("date is invalid");
+			setEnd_period(new Date(Date.now() + 1000 * 60 * 60 * 24 * 30));
+			console.log("date is invalid, resetting to 30 days from now");
+			throw new Error("notify that saved error is invalid for bug detection");
 		} else if (!selected_services.includes(init_services[0])) {
 			const newState = {
 				end_period: end_period, // Use current date for initial state
