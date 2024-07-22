@@ -166,8 +166,8 @@ const DateLine: React.FC<{
 								fontFamily: "inter",
 								fontWeight: "bold",
 								fontSize: 15,
-								left: 47,
-								top: 7,
+								left: 55,
+								top: 9,
 							}}>
 							{getDateFromAngle(angleRef.current).toLocaleString("default", {
 								month: "short",
@@ -179,8 +179,8 @@ const DateLine: React.FC<{
 								color: "white",
 								padding: 10,
 								fontFamily: "inter",
-								top: 25,
-								left: 0,
+								top: 30,
+								left: 10,
 							}}>
 							{getDateFromAngle(angleRef.current).toLocaleString("default", {
 								weekday: "short",
@@ -193,8 +193,8 @@ const DateLine: React.FC<{
 								padding: 10,
 								fontFamily: "inter",
 								fontSize: 40,
-								top: 30,
-								left: 10,
+								top: 35,
+								left: 20,
 							}}>
 							{getDateFromAngle(angleRef.current).toLocaleString("default", {
 								day: "2-digit",

@@ -29,14 +29,19 @@ const Header = ({
 			locations={[0, 0.95, 1]}
 			colors={service_data.colors}
 			style={styles.container}>
-			<Image
-				source={service_data.image}
-				style={styles.logo}
-				transition={{
-					duration: 300, // Duration of the transition in milliseconds
-				}}
-				contentFit='contain'
-			/>
+			<View style={styles.logoContainer}>
+				<Image
+					source={service_data.image}
+					transition={{
+						duration: 300, // Duration of the transition in milliseconds
+					}}
+					style={{
+						width: "100%",
+						height: "60%",
+					}}
+					contentFit='contain'
+				/>
+			</View>
 			<View
 				style={{
 					position: "absolute",
@@ -111,10 +116,10 @@ const Header = ({
 					position: "absolute",
 					alignSelf: "flex-start",
 					height: "100%",
-					width: "20%",
+					width: "30%",
 					alignItems: "flex-start",
 					justifyContent: "center",
-					padding: 30,
+					padding: 5,
 				}}
 				onPress={() => {
 					if (notification_usestate !== undefined) {
@@ -123,7 +128,7 @@ const Header = ({
 				}}>
 				<View
 					style={{
-						height: "100%",
+						height: "50%",
 						width: "100%",
 						shadowOffset: {
 							width: 0,
@@ -157,8 +162,8 @@ const styles = StyleSheet.create({
 		height: 150,
 		paddingBottom: 20,
 	},
-	logo: {
-		height: "80%",
+	logoContainer: {
+		height: "100%",
 		width: "40%",
 		shadowOffset: {
 			width: 0,
@@ -167,6 +172,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.5,
 		shadowRadius: 1,
 		margin: 10,
+		justifyContent: "flex-end",
 	},
 });
 

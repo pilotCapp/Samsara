@@ -212,10 +212,12 @@ const SamsaraWheel: React.FC<{
 						data={data}
 						width={2.2 * radius}
 						height={2.2 * radius}
-						radius={({ index }) => radius + (index === 0 ? 20 : 0)}
-						innerRadius={({ datum }) => radius - 30 - (datum.selected ? 20 : 0)}
+						radius={({ index }) => radius + (index === 0 ? radius * 0.09 : 0)}
+						innerRadius={({ datum }) =>
+							radius - 30 - (datum.selected ? radius * 0.09 : 0)
+						}
 						labelRadius={({ datum }) =>
-							radius * 0.7 - (datum.selected ? 20 : 0)
+							radius - 60 - (datum.selected ? radius * 0.09 : 0)
 						}
 						labelPlacement={"perpendicular"}
 						style={{
@@ -227,6 +229,8 @@ const SamsaraWheel: React.FC<{
 								bold: true,
 								opacity: ({ datum }: { datum: DataItem }) =>
 									datum.selected ? 1 : 0.7,
+								fontWeight: ({ datum }: { datum: DataItem }) =>
+									datum.selected ? "bold" : "normal",
 							} as any,
 							data: {
 								opacity: ({ index }: { index: number }) =>

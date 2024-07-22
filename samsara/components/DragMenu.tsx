@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	View,
 	StyleSheet,
@@ -40,6 +40,15 @@ const DragMenu: React.FC<{
 			useNativeDriver: true,
 		}).start();
 	}
+
+	useEffect(()=>{
+		if(selected_services.length === 0){
+			animateY(minYPosition);
+		}
+		else{
+			animateY(initialYPosition);
+		}
+	},[selected_services])
 
 	const containerResponder = useRef(
 		PanResponder.create({

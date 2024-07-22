@@ -12,6 +12,7 @@ import initBackgroundFetch from "@/scripts/background";
 
 export default function Page() {
 	const fileUri = FileSystem.documentDirectory + "state.json";
+	console.log(fileUri);
 
 	const [end_period, setEnd_period] = useState(() => {
 		const futureDate = new Date();
@@ -38,7 +39,7 @@ export default function Page() {
 	}, []);
 
 	async function testFileUpdate() {
-		const endPeriod = new Date(Date.now() - 1000 * 60 * 60 * 24 * 61);
+		const endPeriod = new Date(Date.now() - 1000 * 60 * 60 * 24 * 5);
 		endPeriod.setHours(23, 59, 59, 999);
 		await saveStateToFile({
 			selected_services: ["netflix", "disney", "hulu"],
@@ -130,9 +131,10 @@ export default function Page() {
 	};
 
 	const loadStateFromFile = async () => {
+		console.log("loading state");
 		try {
 			const fileInfo = await FileSystem.getInfoAsync(fileUri);
-
+			console.log("file info is", fileInfo);
 			if (!fileInfo.exists) {
 				console.log("File does not exist, creating with default values.");
 				const notifications = true;
@@ -157,13 +159,15 @@ export default function Page() {
 				setNotifications(defaultState.notifications);
 
 				//create bacground fetch upon file creation
-				const status = await initBackgroundFetch;
+				const status = await initBackgroundFetch();
 				console.log("background fetch created with status", status);
 				return;
 			}
+			console.log("loading state json");
 
 			const stateJson = await FileSystem.readAsStringAsync(fileUri);
 			const state = JSON.parse(stateJson);
+			console.log("state found", state);
 
 			// Convert string back to Date object
 			if (state.end_period) {
@@ -216,7 +220,7 @@ export default function Page() {
 				setNotifications(state.notifications);
 			} else {
 				setNotifications(true);
-				throw new Error("notifications not found in state");
+				console.log("notifications not found in state, setting to true");
 			}
 		} catch (error) {
 			console.error("Error loading state:", error);
@@ -315,7 +319,12 @@ export default function Page() {
 							title: "null_header",
 							header: () => (
 								<View style={styles.no_services_header}>
-									<Text style={styles.subtitle}>
+									<Text
+										style={styles.subtitle}
+										adjustsFontSizeToFit={true}
+										minimumFontScale={0.1}
+										maxFontSizeMultiplier={1}
+										numberOfLines={1}>
 										Please add some services below
 									</Text>
 								</View>
@@ -361,10 +370,9 @@ const styles = StyleSheet.create({
 		opacity: 0.8,
 	},
 	no_services_header: {
-		flex: 1,
 		alignItems: "center",
-		justifyContent: "center",
-		padding: 24,
+		justifyContent: "flex-end",
+		padding: 25,
 		backgroundColor: "white",
 		top: 0,
 		left: 0,
