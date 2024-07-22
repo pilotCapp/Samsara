@@ -16,8 +16,14 @@ const DragMenu: React.FC<{
 	centerUsestate: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 	angleUsestate: [number, React.Dispatch<React.SetStateAction<number>>];
 }> = ({ serviceUsestate, centerUsestate, angleUsestate }) => {
-	const initialYPosition = Dimensions.get("window").height - 150;
-	const minYPosition = initialYPosition * 0.6;
+	const document = Dimensions.get("window");
+	const height = document.height;
+	const width = document.width;
+
+	let initialYPosition = -800;
+	const maxYPosition = initialYPosition + width / 2;
+	const dragBorder = maxYPosition + 800 + 150;
+
 	const translateY = useRef(new Animated.Value(initialYPosition)).current;
 	const isChildActive = useRef(false);
 
@@ -25,6 +31,7 @@ const DragMenu: React.FC<{
 
 	let plusOpacityValue = 0; // Opacity of the plus sign
 	const plusOpacity = useRef(new Animated.Value(0)).current; // Opacity of the plus sign
+	const serviceRef = useRef(selected_services);
 
 	const animatePlusSign = () => {
 		Animated.timing(plusOpacity, {
@@ -41,42 +48,44 @@ const DragMenu: React.FC<{
 		}).start();
 	}
 
-	useEffect(()=>{
-		if(selected_services.length === 0){
-			animateY(minYPosition);
-		}
-		else{
+	useEffect(() => {
+		serviceRef.current = selected_services;
+		if (serviceRef.current.length === 0) {
+			animateY(maxYPosition + 150);
+		} else {
 			animateY(initialYPosition);
 		}
-	},[selected_services])
+	}, [selected_services]);
 
 	const containerResponder = useRef(
 		PanResponder.create({
 			onStartShouldSetPanResponder: () => !isChildActive.current,
 			onPanResponderGrant: () => {
-				translateY.setOffset(Math.min(translateY._value, initialYPosition));
+				translateY.setOffset(Math.max(translateY._value, initialYPosition));
 				translateY.setValue(0);
 			},
 			onPanResponderMove: (event, gestureState) => {
 				let newTranslateY = gestureState.dy + translateY._offset;
 				// Restrict movement to maxYPosition
-				if (newTranslateY < minYPosition) {
-					newTranslateY = minYPosition;
+				if (newTranslateY > maxYPosition) {
+					newTranslateY = maxYPosition;
 				}
 				translateY.setValue(newTranslateY - translateY._offset);
 			},
 			onPanResponderRelease: (_, gestureState) => {
 				translateY.flattenOffset();
-				if (gestureState.dy < -50) {
-					animateY(minYPosition);
+				if (serviceRef.current.length === 0) {
+					animateY(maxYPosition + 150);
+				} else if (gestureState.dy > 50) {
+					animateY(maxYPosition);
 				} else if (
 					Math.abs(gestureState.dx) < 5 &&
 					Math.abs(gestureState.dy) < 5
 				) {
-					if (translateY._value === minYPosition) {
+					if (translateY._value === maxYPosition) {
 						animateY(initialYPosition);
 					} else {
-						animateY(minYPosition);
+						animateY(maxYPosition);
 					}
 				} else {
 					animateY(initialYPosition);
@@ -111,14 +120,10 @@ const DragMenu: React.FC<{
 					x: gestureState.dx,
 					y: gestureState.dy,
 				});
-
-				if (gestureState.moveY < minYPosition + 150 && plusOpacityValue === 0) {
+				if (gestureState.moveY > dragBorder && plusOpacityValue === 0) {
 					plusOpacityValue = 0.6;
 					animatePlusSign();
-				} else if (
-					gestureState.moveY > minYPosition + 150 &&
-					plusOpacityValue > 0
-				) {
+				} else if (gestureState.moveY < dragBorder && plusOpacityValue > 0) {
 					plusOpacityValue = 0;
 					animatePlusSign();
 				}
@@ -128,7 +133,7 @@ const DragMenu: React.FC<{
 				animatePlusSign(); // Mark the end of an animation
 				pan.flattenOffset();
 				if (
-					gestureState.moveY < minYPosition + 150 &&
+					gestureState.moveY > dragBorder &&
 					!selected_services.includes(serviceKey)
 				) {
 					setSelected_services((prevData) => [...prevData, serviceKey]); // Update selected_services correctly
@@ -206,11 +211,11 @@ const DragMenu: React.FC<{
 				style={{
 					opacity: plusOpacity,
 					position: "absolute",
-					bottom: "100%",
+					top: "105%",
 					alignSelf: "center",
-					width: "10%",
+					width: "20%",
 					aspectRatio: 1,
-					margin: 10,
+					left: "40%",
 				}}>
 				<Image
 					source={require("../assets/images/add_service.png")}
@@ -224,17 +229,23 @@ const DragMenu: React.FC<{
 
 const styles = StyleSheet.create({
 	box: {
+		flex: 1,
 		height: 800,
 		width: "100%",
 		backgroundColor: "rgba(173, 216, 230, 0.5)",
-		flex: 1,
 		flexDirection: "row", // items are laid out in a row
-		flexWrap: "wrap",
-		justifyContent: "center",
-		alignItems: "center",
+		flexWrap: "wrap-reverse", // items wrap to the next line if needed
+		justifyContent: "space-around",
+		alignContent: "flex-start",
 		position: "absolute",
-		top: 0, // Starting position at the bottom
 		borderRadius: 10,
+		marginBottom: 30,
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
 	},
 	serviceBox: {
 		margin: 10,
@@ -252,13 +263,13 @@ const styles = StyleSheet.create({
 	},
 	tag: {
 		position: "absolute",
-		top: -100,
+		top: "100%",
 		left: 20,
-		height: 100,
 		width: "30%",
+		aspectRatio: 2,
 		backgroundColor: "rgba(173, 216, 230, 0.5)",
-		borderTopLeftRadius: 10,
-		borderTopRightRadius: 10,
+		borderBottomLeftRadius: 10,
+		borderBottomRightRadius: 10,
 		zIndex: 1,
 		alignItems: "center",
 		justifyContent: "center",
@@ -266,7 +277,7 @@ const styles = StyleSheet.create({
 		borderColor: "gray",
 		borderRadius: 1,
 		borderWidth: 1,
-		borderBottomColor: "transparent",
+		borderTopColor: "transparent",
 		borderStyle: "solid",
 	},
 	text: {
