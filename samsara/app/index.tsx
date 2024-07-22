@@ -169,7 +169,7 @@ export default function Page() {
 			if (state.end_period) {
 				const endPeriod = new Date(state.end_period);
 				const now = new Date();
-				if (new Date(state.end_period) < new Date()) {
+				if (endPeriod < now) {
 					console.log("End period reached, resetting state");
 					const monthsDiff = Math.ceil(
 						(now.getTime() - endPeriod.getTime()) / (1000 * 60 * 60 * 24 * 30)
@@ -184,7 +184,7 @@ export default function Page() {
 					if (state.selected_services) {
 						new_services = state.selected_services;
 					} else {
-						new_services = init_services;
+						new_services = [];
 					}
 					if (new_services.length > 1) {
 						for (let i = 0; i < monthsDiff; i++) {
