@@ -12,7 +12,7 @@ import initBackgroundFetch from "@/scripts/background";
 
 export default function Page() {
 	const fileUri = FileSystem.documentDirectory + "state.json";
-	console.log(fileUri);
+	//console.log(fileUri);
 
 	const [end_period, setEnd_period] = useState(() => {
 		const futureDate = new Date();
@@ -95,15 +95,9 @@ export default function Page() {
 		today.setHours(23, 59, 59, 999);
 		const timedifference = end_period.getTime() - today.getTime();
 		if (timedifference < 0 || timedifference > 32 * (1000 * 60 * 60 * 24)) {
-			console.log(
-				"end period",
-				end_period,
-				"is not valid with timedifference",
-				timedifference
-			);
 			setEnd_period(new Date(Date.now() + 1000 * 60 * 60 * 24 * 30));
 			console.log("date is invalid, resetting to 30 days from now");
-			throw new Error("notify that saved error is invalid for bug detection");
+			throw new Error("notify that saved error is invalid for bug detection"); //remove for production?
 		} else if (!selected_services.includes(init_services[0])) {
 			const newState = {
 				end_period: end_period, // Use current date for initial state
@@ -112,12 +106,6 @@ export default function Page() {
 			};
 
 			saveStateToFile(newState);
-			console.log(
-				"period changed to",
-				end_period,
-				"with timedifference",
-				timedifference
-			);
 		}
 	}, [end_period]);
 
@@ -131,10 +119,8 @@ export default function Page() {
 	};
 
 	const loadStateFromFile = async () => {
-		console.log("loading state");
 		try {
 			const fileInfo = await FileSystem.getInfoAsync(fileUri);
-			console.log("file info is", fileInfo);
 			if (!fileInfo.exists) {
 				console.log("File does not exist, creating with default values.");
 				const notifications = true;
@@ -159,15 +145,14 @@ export default function Page() {
 				setNotifications(defaultState.notifications);
 
 				//create bacground fetch upon file creation
-				const status = await initBackgroundFetch();
-				console.log("background fetch created with status", status);
+				//const status = await initBackgroundFetch();
+				//console.log("background fetch created with status", status);
+
 				return;
 			}
-			console.log("loading state json");
 
 			const stateJson = await FileSystem.readAsStringAsync(fileUri);
 			const state = JSON.parse(stateJson);
-			console.log("state found", state);
 
 			// Convert string back to Date object
 			if (state.end_period) {
@@ -198,7 +183,6 @@ export default function Page() {
 							}
 						}
 					}
-					console.log("new period", new_period, "new services", new_services);
 					setEnd_period(new_period);
 					setSelected_services(new_services);
 					setNotifications(true);

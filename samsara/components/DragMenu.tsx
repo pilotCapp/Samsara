@@ -202,7 +202,9 @@ const DragMenu: React.FC<{
 				<Text
 					style={styles.text}
 					adjustsFontSizeToFit={true}
-					minimumFontScale={2}>
+					minimumFontScale={0.1}
+					maxFontSizeMultiplier={1}
+					numberOfLines={1}>
 					Services
 				</Text>
 			</View>
@@ -279,10 +281,12 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderTopColor: "transparent",
 		borderStyle: "solid",
+		padding:10,
 	},
 	text: {
 		color: "white",
 		opacity: 0.5,
+		fontSize: 40,
 	},
 });
 

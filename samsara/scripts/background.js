@@ -43,7 +43,6 @@ const saveStateToFile = async (state) => {
 	try {
 		const stateJson = JSON.stringify(state);
 		await FileSystem.writeAsStringAsync(fileUri, stateJson);
-		console.log("State saved successfully");
 		return BackgroundFetch.BackgroundFetchResult.NewData;
 	} catch (error) {
 		console.error("Error saving state:", error);
