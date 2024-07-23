@@ -7,6 +7,38 @@ import * as FileSystem from "expo-file-system";
 const fileUri = FileSystem.documentDirectory + "state.json"; //possible duplicate
 const BACKGROUND_FETCH_TASK = "update_state_file";
 
+TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+	const now = Date.now();
+
+	console.log(
+		`Got background fetch call at date: ${new Date(now).toISOString()}`
+	);
+
+	return await updateStateFile();
+});
+
+(async () => {
+	try {
+	  const fetchStatus = await BackgroundFetch.getStatusAsync();
+	  console.log("Background fetch status:", fetchStatus);
+	  if (fetchStatus === BackgroundFetch.BackgroundFetchStatus.Available) {
+		const taskStatus= await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
+		console.log("Task status:", taskStatus);
+		if (taskStatus) {
+			const result = await registerBackgroundFetchAsync();
+			console.log("Background fetch registered with result:", result);
+			return;
+		}
+	  } else {
+		console.log("Background fetch not available");
+		return;
+	  }
+	} catch (error) {
+	  console.error("Error registering background task:", error);
+	}
+  })();
+
+
 const saveStateToFile = async (state) => {
 	try {
 		const stateJson = JSON.stringify(state);
@@ -84,19 +116,11 @@ const updateStateFile = async () => {
 	}
 };
 
-// Example of OS determined task schedule
+
+
 
 // Start the background worker
-const initBackgroundFetch = async () => {
-	TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-		const now = Date.now();
-
-		console.log(
-			`Got background fetch call at date: ${new Date(now).toISOString()}`
-		);
-
-		return await updateStateFile();
-	});
+async function registerBackgroundFetchAsync() {
 
 	const status = await BackgroundFetch.registerTaskAsync(
 		BACKGROUND_FETCH_TASK,
@@ -112,4 +136,4 @@ const initBackgroundFetch = async () => {
 	return status;
 };
 
-export default initBackgroundFetch;
+export default {registerBackgroundFetchAsync, updateStateFile};
