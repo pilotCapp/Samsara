@@ -21,7 +21,7 @@ const DragMenu: React.FC<{
 	const width = document.width;
 
 	let initialYPosition = -800;
-	const maxYPosition = initialYPosition + width / 2;
+	const maxYPosition = initialYPosition + (width * 3) / 8 + 60;
 	const dragBorder = maxYPosition + 800 + 150;
 
 	const translateY = useRef(new Animated.Value(initialYPosition)).current;
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderTopColor: "transparent",
 		borderStyle: "solid",
-		padding:10,
+		padding: 10,
 	},
 	text: {
 		color: "white",
