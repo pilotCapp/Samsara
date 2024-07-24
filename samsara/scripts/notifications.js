@@ -41,27 +41,54 @@ export async function schedulePushNotification(
 	let weekBefore = new Date(date);
 	weekBefore.setDate(date.getDate() - 7);
 
+	const titles =
+		current_service == next_service
+			? [
+					"Subscription Renewed",
+					`Subscription to ${current_service} renewes in one day!`,
+					`Subscription to ${current_service} renewes in one week!`,
+			  ]
+			: [
+					"Subscription Changed",
+					`Subscription to ${current_service} ends in one day!`,
+					`Subscription to ${current_service} ends in one week!`,
+			  ];
+	const bodies =
+		current_service == next_service
+			? [
+					`You have renewed your subscription to ${current_service}`,
+					`If you want to cancel or switch out your subscription to ${current_service} you have one day left`,
+					`If you want to cancel or switch out your subscription to ${current_service} you have one day left, if not you can turn of further notices in the app`,
+			  ]
+			: [
+					`Remember to start your subsrciption to ${next_service}, and cancel your current subscription`,
+					`Please cancel your subscription to avoid charges, and create a subscription to ${next_service}`,
+					`If you plan to change subscription to ${next_service} there is no point in waiting. Remember to turn of further notices in the app after you have made the change`,
+			  ];
+
+	const testDate = new Date(today.getTime() + 10000);
+
 	if (date > today) {
 		await Notifications.scheduleNotificationAsync({
 			content: {
-				title: "Subscription Changed",
-				body: `Remember to start your subsrciption to ${next_service}, and cancel your current subscription`,
+				title: titles[0],
+				body: bodies[0],
 			},
 			trigger: { date: date }, // Schedule for the date
 		});
 		if (dayBefore > today) {
 			await Notifications.scheduleNotificationAsync({
 				content: {
-					title: `Subscription to ${current_service} ends in one day!`,
-					body: `Please cancel your subscription to avoid charges, and create a subscription to ${next_service}`,
+					title: titles[1],
+					body: bodies[1],
 				},
 				trigger: { date: dayBefore }, // Schedule for one day ahead of date
 			});
 			if (weekBefore > today) {
 				await Notifications.scheduleNotificationAsync({
 					content: {
-						title: `Subscription to ${current_service} ends in one week!`,
-						body: `If you plan to change subscription to ${next_service} there is no point in waiting. Remember to turn of further notices in the app after you have made the change`,
+						title: titles[2],
+						body: bodies[2],
 					},
 					trigger: { date: weekBefore }, // Schedule for one week ahead of date
 				});
@@ -83,5 +110,9 @@ export async function alterPushNotifications(
 	await schedulePushNotification(date, current_service, next_service);
 	const scheduledNotifications =
 		await Notifications.getAllScheduledNotificationsAsync();
-	console.log(scheduledNotifications.length, scheduledNotifications);
+}
+
+export async function getNotificationPermissions(){
+	const permission =  await Notification.getPermissionsAsync();
+	return permission.status;
 }

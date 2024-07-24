@@ -16,6 +16,7 @@ import {
 	registerForPushNotificationsAsync,
 	schedulePushNotification,
 	cancelAllScheduledNotifications,
+	getNotificationPermissions,
 } from "@/scripts/notifications";
 
 export default function Page() {
@@ -38,7 +39,9 @@ export default function Page() {
 
 	const [addServiceVisual, setAddServiceVisual] = useState(false);
 
-	const [notifications, setNotifications] = useState(true);
+	const [notifications, setNotifications] = useState(false);
+	const [notificationPermission, setNotificationPermission] =
+		useState<boolean>(false);
 	const [notificationDates, setNotificationDates] = useState<Date[]>([]);
 
 	useEffect(() => {
@@ -47,9 +50,14 @@ export default function Page() {
 		const initializeNotifications = async () => {
 			const status = await registerForPushNotificationsAsync();
 			console.log("notifications initialized with status", status);
+			if (status != "granted") {
+				setNotificationPermission(false);
+				setNotifications(false);
+			} else {
+				setNotificationPermission(true);
+			}
 		};
 		initializeNotifications();
-		
 	}, []);
 
 	async function testFileUpdate() {
@@ -61,15 +69,23 @@ export default function Page() {
 			notifications: false,
 		});
 	}
+
 	useEffect(() => {
-		if (!selected_services.includes(init_services[0])) {
+		if (notifications && !notificationPermission){
+			alert("Please enable notifications in your settings and restart the app to receive notifications");
+			setNotifications(false);
+		}
+		else if (
+			!selected_services.includes(init_services[0]) &&
+			notificationPermission
+		) {
 			const newState = {
 				end_period: end_period, // Use current date for initial state
 				selected_services: selected_services,
 				notifications: notifications,
 			};
 			saveStateToFile(newState);
-			if (notifications) {
+			if (notifications && notificationPermission) {
 				if (selected_services.length > 1) {
 					alterPushNotifications(
 						end_period,
@@ -82,10 +98,9 @@ export default function Page() {
 						selected_services[0],
 						selected_services[0]
 					);
-				}else {
+				} else {
 					cancelAllScheduledNotifications();
 				}
-				
 			} else {
 				cancelAllScheduledNotifications();
 			}
@@ -119,7 +134,7 @@ export default function Page() {
 				selected_services: selected_services,
 				notifications: notifications,
 			};
-			if (notifications) {
+			if (notifications && notificationPermission) {
 				if (selected_services.length > 1) {
 					alterPushNotifications(
 						end_period,
@@ -132,8 +147,7 @@ export default function Page() {
 						selected_services[0],
 						selected_services[0]
 					);
-				}
-				else{
+				} else {
 					cancelAllScheduledNotifications();
 				}
 			}
@@ -157,7 +171,7 @@ export default function Page() {
 				notifications: notifications,
 			};
 
-			if (notifications) {
+			if (notifications && notificationPermission) {
 				if (selected_services.length > 1) {
 					alterPushNotifications(
 						end_period,
@@ -170,8 +184,7 @@ export default function Page() {
 						selected_services[0],
 						selected_services[0]
 					);
-				}
-				else{
+				} else {
 					cancelAllScheduledNotifications();
 				}
 			}

@@ -217,7 +217,7 @@ const SamsaraWheel: React.FC<{
 							radius - 30 - (datum.selected ? radius * 0.09 : 0)
 						}
 						labelRadius={({ datum }) =>
-							radius - 60 - (datum.selected ? radius * 0.09 : 0)
+							radius - 60 - (datum.selected ? radius * 0.09 : 0)-radius/12
 						}
 						labelPlacement={"perpendicular"}
 						style={{
