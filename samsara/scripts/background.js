@@ -4,6 +4,12 @@ import * as BackgroundFetch from "expo-background-fetch";
 import * as TaskManager from "expo-task-manager";
 import * as FileSystem from "expo-file-system";
 
+import {
+	registerForPushNotificationsAsync,
+	schedulePushNotification,
+	alterPushNotifications,
+} from "@/scripts/notifications";
+
 const fileUri = FileSystem.documentDirectory + "state.json"; //possible duplicate
 const BACKGROUND_FETCH_TASK = "update_state_file";
 
@@ -19,25 +25,26 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
 
 (async () => {
 	try {
-	  const fetchStatus = await BackgroundFetch.getStatusAsync();
-	  console.log("Background fetch status:", fetchStatus);
-	  if (fetchStatus === BackgroundFetch.BackgroundFetchStatus.Available) {
-		const taskStatus= await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
-		console.log("Task status:", taskStatus);
-		if (taskStatus) {
-			const result = await registerBackgroundFetchAsync();
-			console.log("Background fetch registered with result:", result);
+		const fetchStatus = await BackgroundFetch.getStatusAsync();
+		console.log("Background fetch status:", fetchStatus);
+		if (fetchStatus === BackgroundFetch.BackgroundFetchStatus.Available) {
+			const taskStatus = await TaskManager.isTaskRegisteredAsync(
+				BACKGROUND_FETCH_TASK
+			);
+			console.log("Task status:", taskStatus);
+			if (taskStatus) {
+				const result = await registerBackgroundFetchAsync();
+				console.log("Background fetch registered with result:", result);
+				return;
+			}
+		} else {
+			console.log("Background fetch not available");
 			return;
 		}
-	  } else {
-		console.log("Background fetch not available");
-		return;
-	  }
 	} catch (error) {
-	  console.error("Error registering background task:", error);
+		console.error("Error registering background task:", error);
 	}
-  })();
-
+})();
 
 const saveStateToFile = async (state) => {
 	try {
@@ -95,11 +102,30 @@ const updateStateFile = async () => {
 					const new_state = {
 						end_period: new_period,
 						selected_services: new_services,
-						notifications: state.notifications,
+						notifications: true,
 					};
 
+					if (new_state.notifications) {
+						if (new_services.length > 1) {
+							alterPushNotifications(
+								new_period,
+								new_services[0],
+								new_services[1]
+							);
+						} else if (selected_services.length == 1) {
+							alterPushNotifications(
+								new_period,
+								new_services[0],
+								new_services[0]
+							);
+						} else {
+							cancelAllScheduledNotifications();
+						}
+					} else {
+						cancelAllScheduledNotifications();
+					}
+					console.log("Push notifications altered from bacground fetch");
 					return await saveStateToFile(new_state);
-
 				} else {
 					console.log("End period not reached, no state update needed");
 					return BackgroundFetch.BackgroundFetchResult.NoData;
@@ -115,12 +141,8 @@ const updateStateFile = async () => {
 	}
 };
 
-
-
-
 // Start the background worker
 async function registerBackgroundFetchAsync() {
-
 	const status = await BackgroundFetch.registerTaskAsync(
 		BACKGROUND_FETCH_TASK,
 		{
@@ -133,6 +155,6 @@ async function registerBackgroundFetchAsync() {
 
 	console.log("[ Bacground fetch status ]", status);
 	return status;
-};
+}
 
-export default {registerBackgroundFetchAsync, updateStateFile};
+export default { registerBackgroundFetchAsync, updateStateFile };

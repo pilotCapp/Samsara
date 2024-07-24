@@ -8,7 +8,15 @@ import { services } from "@/constants/services";
 import { LinearGradient } from "expo-linear-gradient";
 import * as FileSystem from "expo-file-system";
 import DragMenu from "@/components/DragMenu";
-import initBackgroundFetch from "@/scripts/background";
+import registerBackgroundFetchAsync from "@/scripts/background";
+console.log("background fetch import", registerBackgroundFetchAsync);
+
+import {
+	alterPushNotifications,
+	registerForPushNotificationsAsync,
+	schedulePushNotification,
+	cancelAllScheduledNotifications,
+} from "@/scripts/notifications";
 
 export default function Page() {
 	const fileUri = FileSystem.documentDirectory + "state.json";
@@ -36,6 +44,12 @@ export default function Page() {
 	useEffect(() => {
 		//testFileUpdate();
 		loadStateFromFile();
+		const initializeNotifications = async () => {
+			const status = await registerForPushNotificationsAsync();
+			console.log("notifications initialized with status", status);
+		};
+		initializeNotifications();
+		
 	}, []);
 
 	async function testFileUpdate() {
@@ -44,7 +58,7 @@ export default function Page() {
 		await saveStateToFile({
 			selected_services: ["netflix", "disney", "hulu"],
 			end_period: endPeriod,
-			notifications: true,
+			notifications: false,
 		});
 	}
 	useEffect(() => {
@@ -55,6 +69,26 @@ export default function Page() {
 				notifications: notifications,
 			};
 			saveStateToFile(newState);
+			if (notifications) {
+				if (selected_services.length > 1) {
+					alterPushNotifications(
+						end_period,
+						selected_services[0],
+						selected_services[1]
+					);
+				} else if (selected_services.length == 1) {
+					alterPushNotifications(
+						end_period,
+						selected_services[0],
+						selected_services[0]
+					);
+				}else {
+					cancelAllScheduledNotifications();
+				}
+				
+			} else {
+				cancelAllScheduledNotifications();
+			}
 		}
 	}, [notifications]);
 
@@ -85,6 +119,24 @@ export default function Page() {
 				selected_services: selected_services,
 				notifications: notifications,
 			};
+			if (notifications) {
+				if (selected_services.length > 1) {
+					alterPushNotifications(
+						end_period,
+						selected_services[0],
+						selected_services[1]
+					);
+				} else if (selected_services.length == 1) {
+					alterPushNotifications(
+						end_period,
+						selected_services[0],
+						selected_services[0]
+					);
+				}
+				else{
+					cancelAllScheduledNotifications();
+				}
+			}
 
 			saveStateToFile(newState);
 		}
@@ -104,6 +156,25 @@ export default function Page() {
 				selected_services: selected_services,
 				notifications: notifications,
 			};
+
+			if (notifications) {
+				if (selected_services.length > 1) {
+					alterPushNotifications(
+						end_period,
+						selected_services[0],
+						selected_services[1]
+					);
+				} else if (selected_services.length == 1) {
+					alterPushNotifications(
+						end_period,
+						selected_services[0],
+						selected_services[0]
+					);
+				}
+				else{
+					cancelAllScheduledNotifications();
+				}
+			}
 
 			saveStateToFile(newState);
 		}
