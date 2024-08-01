@@ -60,7 +60,7 @@ export const services:{[key: string]: Service} = {
         id:0,
         name: "Initializing",
         colors: ['#FFFFFF',"#FFFFFF","#FFFFFF"],
-        image:{uri: "https://icons8.com/preloaders/preloaders/334/Thin%20filling%20broken%20ring.gif"}
+        image: require("../assets/animations/loading3.gif")
     },
     none:{
         id:100,

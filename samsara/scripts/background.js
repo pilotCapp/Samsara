@@ -37,6 +37,19 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
 				console.log("Background fetch registered with result:", result);
 				return;
 			}
+			else{
+				TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+					const now = Date.now();
+				
+					console.log(
+						`Got background fetch call at date: ${new Date(now).toISOString()}`
+					);
+				
+					return await updateStateFile();
+				});
+				const result = await registerBackgroundFetchAsync();
+				console.log("Background fetch registered with result:", result);
+			}
 		} else {
 			console.log("Background fetch not available");
 			return;

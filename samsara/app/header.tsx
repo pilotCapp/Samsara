@@ -39,7 +39,10 @@ const Header = ({
 						width: "100%",
 						height: "60%",
 					}}
+					placeholder={require("../assets/animations/loading3.gif")}
+					placeholderContentFit='contain'
 					contentFit='contain'
+					cachePolicy='memory-disk'
 				/>
 			</View>
 			<View
@@ -79,7 +82,6 @@ const Header = ({
 								color: "white",
 								fontSize: 100,
 								fontWeight: "bold",
-								fontFamily: "inter",
 							}}
 							adjustsFontSizeToFit={true}
 							minimumFontScale={0.1}
@@ -100,7 +102,6 @@ const Header = ({
 								color: "white",
 								fontSize: 35,
 								fontWeight: "bold",
-								fontFamily: "roboto",
 							}}
 							adjustsFontSizeToFit={true}
 							minimumFontScale={0.1}

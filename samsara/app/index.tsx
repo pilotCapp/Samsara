@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import SamsaraWheel from "@/components/SamsaraWheel";
 import Header from "./header";
 import { Stack } from "expo-router";
@@ -7,7 +7,9 @@ import { Service } from "@/types";
 import { services } from "@/constants/services";
 import { LinearGradient } from "expo-linear-gradient";
 import * as FileSystem from "expo-file-system";
+import { Image } from "expo-image";
 import DragMenu from "@/components/DragMenu";
+import HelpButton from "@/components/Help";
 import registerBackgroundFetchAsync from "@/scripts/background";
 console.log("background fetch import", registerBackgroundFetchAsync);
 
@@ -71,11 +73,12 @@ export default function Page() {
 	}
 
 	useEffect(() => {
-		if (notifications && !notificationPermission){
-			alert("Please enable notifications in your settings and restart the app to receive notifications");
+		if (notifications && !notificationPermission) {
+			alert(
+				"Please enable notifications in your settings and restart the app to receive notifications"
+			);
 			setNotifications(false);
-		}
-		else if (
+		} else if (
 			!selected_services.includes(init_services[0]) &&
 			notificationPermission
 		) {
@@ -368,7 +371,7 @@ export default function Page() {
 								<Image
 									source={selected_service_data[1].image}
 									style={{ height: "100%", width: "100%" }}
-									resizeMode={"contain"}
+									contentFit={"contain"}
 								/>
 							</View>
 						</View>
@@ -406,6 +409,7 @@ export default function Page() {
 				centerUsestate={[addServiceVisual, setAddServiceVisual]}
 				angleUsestate={[endAngle, setEndAngle]}
 			/>
+			<HelpButton></HelpButton>
 		</View>
 	);
 }
@@ -434,7 +438,6 @@ const styles = StyleSheet.create({
 			width: 0,
 			height: 3,
 		},
-		fontFamily: "inter",
 		opacity: 0.8,
 	},
 	no_services_header: {

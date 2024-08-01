@@ -5,8 +5,9 @@ import {
 	View,
 	StyleSheet,
 	Dimensions,
-	Image,
 } from "react-native";
+import { Image } from "expo-image";
+
 
 const DateLine: React.FC<{
 	radius: number;
@@ -125,7 +126,7 @@ const DateLine: React.FC<{
 						height: "100%",
 						transform: [{ rotate: `${angleRef.current}rad` }],
 					}}
-					resizeMode={"contain"}></Image>
+					contentFit={"contain"}></Image>
 			</View>
 			{isDragging ? (
 				<Animated.View
@@ -149,7 +150,7 @@ const DateLine: React.FC<{
 					}}>
 					<Image
 						source={require("../assets/images/dateline_calendar.png")}
-						resizeMode={"contain"}
+						contentFit={"contain"}
 						style={{ width: "100%", height: "100%" }}
 					/>
 					<View
@@ -163,7 +164,6 @@ const DateLine: React.FC<{
 								position: "absolute",
 								color: "white",
 								padding: 10,
-								fontFamily: "inter",
 								fontWeight: "bold",
 								fontSize: 15,
 								left: 55,
@@ -178,7 +178,6 @@ const DateLine: React.FC<{
 								position: "absolute",
 								color: "white",
 								padding: 10,
-								fontFamily: "inter",
 								top: 30,
 								left: 10,
 							}}>
@@ -191,7 +190,6 @@ const DateLine: React.FC<{
 								position: "absolute",
 								color: "white",
 								padding: 10,
-								fontFamily: "inter",
 								fontSize: 40,
 								top: 35,
 								left: 20,

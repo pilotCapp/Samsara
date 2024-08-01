@@ -6,10 +6,10 @@ import {
 	PanResponder,
 	Pressable,
 	Dimensions,
-	Image,
 	Text,
 } from "react-native";
 import { services } from "@/constants/services";
+import { Image } from "expo-image";
 
 const DragMenu: React.FC<{
 	serviceUsestate: [string[], React.Dispatch<React.SetStateAction<string[]>>];
@@ -121,7 +121,7 @@ const DragMenu: React.FC<{
 					y: gestureState.dy,
 				});
 				if (gestureState.moveY > dragBorder && plusOpacityValue === 0) {
-					plusOpacityValue = 0.6;
+					plusOpacityValue = 0.8;
 					animatePlusSign();
 				} else if (gestureState.moveY < dragBorder && plusOpacityValue > 0) {
 					plusOpacityValue = 0;
@@ -182,7 +182,10 @@ const DragMenu: React.FC<{
 						<Image
 							source={service.image}
 							style={{ height: "100%", width: "100%", opacity: 1 }}
-							resizeMode='contain'
+							contentFit='contain'
+							placeholder={require("../assets/animations/loading3.gif")}
+							placeholderContentFit='contain'
+							cachePolicy={"memory-disk"}
 						/>
 					</Pressable>
 				</Animated.View>
@@ -222,7 +225,7 @@ const DragMenu: React.FC<{
 				<Image
 					source={require("../assets/images/add_service.png")}
 					style={{ width: "100%", height: "100%" }}
-					resizeMode={"contain"}></Image>
+					contentFit={"contain"}></Image>
 			</Animated.View>
 			{serviceItems}
 		</Animated.View>

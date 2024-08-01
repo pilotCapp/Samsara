@@ -1,22 +1,10 @@
 import {
 	View,
-	Pressable,
 	StyleSheet,
 	Dimensions,
-	Image,
 	Animated,
-	Button,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
-import { Asset } from "expo-asset";
-import { transform } from "@babel/core";
-import Svg, {
-	Path,
-	Text as SvgText,
-	Defs,
-	TextPath,
-	Circle,
-} from "react-native-svg";
 
 import { Service, DataItem } from "@/types";
 
@@ -47,28 +35,11 @@ const SamsaraWheel: React.FC<{
 
 	const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity 0
 
-	const cacheImages = async () => {
-		const images = [
-			require("../assets/images/add_service.png"),
-			require("../assets/images/calendar.png"),
-		];
-
-		const cachePromises = images.map((image) =>
-			Asset.fromModule(image).downloadAsync()
-		);
-		await Promise.all(cachePromises);
-	};
-
 	let colorScale = selected_services.map(
 		(key) => services[key.toLowerCase()].colors[0]
 	);
 
 	async function initiallizeData() {
-		try {
-			await cacheImages();
-		} catch (error) {
-			console.error("Error caching images:", error);
-		}
 
 		const newData: DataItem[] = selected_services.map((key) => ({
 			y: 100 / selected_services.length,
