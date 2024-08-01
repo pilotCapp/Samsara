@@ -40,7 +40,7 @@ export const services:{[key: string]: Service} = {
     },
     apple: {
         id: 7,
-        name: 'AppleTv',
+        name: 'AppleTV+',
         colors: ['#D0D0D0',"#555555","#000000"],
         image: require("../assets/logos/apple.png")
     },

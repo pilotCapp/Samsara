@@ -21,8 +21,12 @@ const DragMenu: React.FC<{
 	const width = document.width;
 
 	let initialYPosition = -800;
-	const maxYPosition = initialYPosition + (width * 3) / 8 + 60;
-	const dragBorder = maxYPosition + 800 + 150;
+	let maxYPosition = useRef(
+		initialYPosition +
+			(width * Math.ceil((9 - serviceUsestate[0].length) / 3)) / 8 +
+			20
+	);
+	let dragBorder = useRef(maxYPosition.current + 800 + 300);
 
 	const translateY = useRef(new Animated.Value(initialYPosition)).current;
 	const isChildActive = useRef(false);
@@ -50,11 +54,17 @@ const DragMenu: React.FC<{
 
 	useEffect(() => {
 		serviceRef.current = selected_services;
+		maxYPosition.current =
+			initialYPosition +
+			1.4*(width * Math.ceil((9 - serviceRef.current.length) / 3)) / 8;
+		dragBorder.current = maxYPosition.current + 800 + 150;
+
 		if (serviceRef.current.length === 0) {
-			animateY(maxYPosition + 150);
+			animateY(maxYPosition.current);
 		} else {
 			animateY(initialYPosition);
 		}
+		console.log(initialYPosition, maxYPosition.current, dragBorder.current);
 	}, [selected_services]);
 
 	const containerResponder = useRef(
@@ -67,25 +77,25 @@ const DragMenu: React.FC<{
 			onPanResponderMove: (event, gestureState) => {
 				let newTranslateY = gestureState.dy + translateY._offset;
 				// Restrict movement to maxYPosition
-				if (newTranslateY > maxYPosition) {
-					newTranslateY = maxYPosition;
+				if (newTranslateY > maxYPosition.current) {
+					newTranslateY = maxYPosition.current;
 				}
 				translateY.setValue(newTranslateY - translateY._offset);
 			},
 			onPanResponderRelease: (_, gestureState) => {
 				translateY.flattenOffset();
 				if (serviceRef.current.length === 0) {
-					animateY(maxYPosition + 150);
+					animateY(maxYPosition.current);
 				} else if (gestureState.dy > 50) {
-					animateY(maxYPosition);
+					animateY(maxYPosition.current);
 				} else if (
 					Math.abs(gestureState.dx) < 5 &&
 					Math.abs(gestureState.dy) < 5
 				) {
-					if (translateY._value === maxYPosition) {
+					if (translateY._value === maxYPosition.current) {
 						animateY(initialYPosition);
 					} else {
-						animateY(maxYPosition);
+						animateY(maxYPosition.current);
 					}
 				} else {
 					animateY(initialYPosition);
@@ -120,10 +130,13 @@ const DragMenu: React.FC<{
 					x: gestureState.dx,
 					y: gestureState.dy,
 				});
-				if (gestureState.moveY > dragBorder && plusOpacityValue === 0) {
+				if (gestureState.moveY > dragBorder.current && plusOpacityValue === 0) {
 					plusOpacityValue = 0.8;
 					animatePlusSign();
-				} else if (gestureState.moveY < dragBorder && plusOpacityValue > 0) {
+				} else if (
+					gestureState.moveY < dragBorder.current &&
+					plusOpacityValue > 0
+				) {
 					plusOpacityValue = 0;
 					animatePlusSign();
 				}
@@ -133,7 +146,7 @@ const DragMenu: React.FC<{
 				animatePlusSign(); // Mark the end of an animation
 				pan.flattenOffset();
 				if (
-					gestureState.moveY > dragBorder &&
+					gestureState.moveY > dragBorder.current &&
 					!selected_services.includes(serviceKey)
 				) {
 					setSelected_services((prevData) => [...prevData, serviceKey]); // Update selected_services correctly
