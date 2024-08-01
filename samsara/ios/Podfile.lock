@@ -1542,9 +1542,9 @@ PODS:
     - Yoga
   - RNSVG (15.4.0):
     - React-Core
-  - SDWebImage (5.19.2):
-    - SDWebImage/Core (= 5.19.2)
-  - SDWebImage/Core (5.19.2)
+  - SDWebImage (5.19.4):
+    - SDWebImage/Core (= 5.19.4)
+  - SDWebImage/Core (5.19.4)
   - SDWebImageAVIFCoder (0.11.0):
     - libavif/core (>= 0.11.0)
     - SDWebImage (~> 5.10)
@@ -1913,7 +1913,7 @@ SPEC CHECKSUMS:
   RNReanimated: 35f9ac9c3ac42d0497ebd1cce5c39d7687a8493e
   RNScreens: b32a9ff15bea7fcdbe5dff6477bc503f792b1208
   RNSVG: cb24fb322de8c1ebf59904e7aca0447bb8dbed5a
-  SDWebImage: dfe95b2466a9823cf9f0c6d01217c06550d7b29a
+  SDWebImage: 066c47b573f408f18caa467d71deace7c0f8280d
   SDWebImageAVIFCoder: 00310d246aab3232ce77f1d8f0076f8c4b021d90
   SDWebImageSVGCoder: 15a300a97ec1c8ac958f009c02220ac0402e936c
   SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
