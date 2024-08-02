@@ -38,14 +38,3 @@ export default function RootLayout() {
 		</ThemeProvider>
 	);
 }
-
-/* Rectangle 2 */
-
-// position: absolute;
-// width: 390px;
-// height: 100px;
-// left: 0px;
-// top: 0px;
-
-// background: radial-gradient(151.03% 134.5% at 50% 6%, #001251 5.5%, #234889 50.69%, #BFF5FD 100%);
-// border-radius: 0px 0px 7px 7px;

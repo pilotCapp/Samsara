@@ -20,15 +20,15 @@ const DragMenu: React.FC<{
 	const height = document.height;
 	const width = document.width;
 
-	let initialYPosition = -800;
+	let initialYPosition = useRef(-800);
 	let maxYPosition = useRef(
-		initialYPosition +
+		initialYPosition.current +
 			(width * Math.ceil((9 - serviceUsestate[0].length) / 3)) / 8 +
 			20
 	);
 	let dragBorder = useRef(maxYPosition.current + 800 + 300);
 
-	const translateY = useRef(new Animated.Value(initialYPosition)).current;
+	const translateY = useRef(new Animated.Value(initialYPosition.current)).current;
 	const isChildActive = useRef(false);
 
 	const [selected_services, setSelected_services] = serviceUsestate;
@@ -54,24 +54,26 @@ const DragMenu: React.FC<{
 
 	useEffect(() => {
 		serviceRef.current = selected_services;
+		if(serviceRef.current.length==0){initialYPosition.current = -800+150}
+		else{initialYPosition.current = -800}
 		maxYPosition.current =
-			initialYPosition +
+			initialYPosition.current +
 			1.4*(width * Math.ceil((9 - serviceRef.current.length) / 3)) / 8;
 		dragBorder.current = maxYPosition.current + 800 + 150;
 
 		if (serviceRef.current.length === 0) {
 			animateY(maxYPosition.current);
 		} else {
-			animateY(initialYPosition);
+			animateY(initialYPosition.current);
 		}
-		console.log(initialYPosition, maxYPosition.current, dragBorder.current);
+		console.log(initialYPosition.current, maxYPosition.current, dragBorder.current);
 	}, [selected_services]);
 
 	const containerResponder = useRef(
 		PanResponder.create({
 			onStartShouldSetPanResponder: () => !isChildActive.current,
 			onPanResponderGrant: () => {
-				translateY.setOffset(Math.max(translateY._value, initialYPosition));
+				translateY.setOffset(Math.max(translateY._value, initialYPosition.current));
 				translateY.setValue(0);
 			},
 			onPanResponderMove: (event, gestureState) => {
@@ -93,12 +95,12 @@ const DragMenu: React.FC<{
 					Math.abs(gestureState.dy) < 5
 				) {
 					if (translateY._value === maxYPosition.current) {
-						animateY(initialYPosition);
+						animateY(initialYPosition.current);
 					} else {
 						animateY(maxYPosition.current);
 					}
 				} else {
-					animateY(initialYPosition);
+					animateY(initialYPosition.current);
 				}
 			},
 		})

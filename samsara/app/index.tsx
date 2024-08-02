@@ -5,6 +5,7 @@ import { Stack } from "expo-router";
 import { useState, useEffect } from "react";
 import { Service } from "@/types";
 import { services } from "@/constants/services";
+import * as SplashScreen from "expo-splash-screen";
 import { LinearGradient } from "expo-linear-gradient";
 import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
@@ -13,6 +14,8 @@ import HelpButton from "@/components/Help";
 import registerBackgroundFetchAsync from "@/scripts/background";
 console.log("background fetch import", registerBackgroundFetchAsync);
 
+SplashScreen.preventAutoHideAsync(); //needs to be tested
+
 import {
 	alterPushNotifications,
 	registerForPushNotificationsAsync,
@@ -20,10 +23,19 @@ import {
 	cancelAllScheduledNotifications,
 	getNotificationPermissions,
 } from "@/scripts/notifications";
+import { useFonts } from "expo-font";
 
 export default function Page() {
 	const fileUri = FileSystem.documentDirectory + "state.json";
 	//console.log(fileUri);
+
+	const [loaded, setLoaded] = useState(false);
+
+	useEffect(() => {
+		if (loaded) {
+			SplashScreen.hideAsync();
+		}
+	}, [loaded]);
 
 	const [end_period, setEnd_period] = useState(() => {
 		const futureDate = new Date();
@@ -47,37 +59,33 @@ export default function Page() {
 	const [notificationDates, setNotificationDates] = useState<Date[]>([]);
 
 	useEffect(() => {
-		//testFileUpdate();
 		loadStateFromFile();
-		const initializeNotifications = async () => {
-			const status = await registerForPushNotificationsAsync();
-			console.log("notifications initialized with status", status);
-			if (status != "granted") {
-				setNotificationPermission(false);
-				setNotifications(false);
-			} else {
-				setNotificationPermission(true);
-			}
-		};
-		initializeNotifications();
 	}, []);
 
-	async function testFileUpdate() {
-		const endPeriod = new Date(Date.now() - 1000 * 60 * 60 * 24 * 5);
-		endPeriod.setHours(23, 59, 59, 999);
-		await saveStateToFile({
-			selected_services: ["netflix", "disney", "hulu"],
-			end_period: endPeriod,
-			notifications: false,
-		});
+	async function initializeNotifications() {
+		const status = await registerForPushNotificationsAsync();
+		console.log("notifications initialized with status", status);
+		if (status != "granted") {
+			setNotificationPermission(false);
+		} else {
+			setNotificationPermission(true);
+		}
+		setLoaded(true);
+		return status;
 	}
 
 	useEffect(() => {
 		if (notifications && !notificationPermission) {
-			alert(
-				"Please enable notifications in your settings and restart the app to receive notifications"
-			);
-			setNotifications(false);
+			const getPermission = async () => {
+				const status = await initializeNotifications();
+				if (status != "granted") {
+					alert(
+						"Please enable notifications in your settings and restart the app to receive notifications"
+					);
+					setNotifications(false);
+				}
+			};
+			getPermission();
 		} else if (
 			!selected_services.includes(init_services[0]) &&
 			notificationPermission
@@ -108,7 +116,7 @@ export default function Page() {
 				cancelAllScheduledNotifications();
 			}
 		}
-	}, [notifications]);
+	}, [notifications, notificationPermission]);
 
 	useEffect(() => {
 		if (selected_services.length > 1) {
