@@ -28,7 +28,9 @@ const DragMenu: React.FC<{
 	);
 	let dragBorder = useRef(maxYPosition.current + 800 + 300);
 
-	const translateY = useRef(new Animated.Value(initialYPosition.current)).current;
+	const translateY = useRef(
+		new Animated.Value(initialYPosition.current)
+	).current;
 	const isChildActive = useRef(false);
 
 	const [selected_services, setSelected_services] = serviceUsestate;
@@ -54,11 +56,14 @@ const DragMenu: React.FC<{
 
 	useEffect(() => {
 		serviceRef.current = selected_services;
-		if(serviceRef.current.length==0){initialYPosition.current = -800+150}
-		else{initialYPosition.current = -800}
+		if (serviceRef.current.length == 0) {
+			initialYPosition.current = -800 + 150;
+		} else {
+			initialYPosition.current = -800;
+		}
 		maxYPosition.current =
 			initialYPosition.current +
-			1.4*(width * Math.ceil((9 - serviceRef.current.length) / 3)) / 8;
+			(1.4 * (width * Math.ceil((9 - serviceRef.current.length) / 3))) / 8;
 		dragBorder.current = maxYPosition.current + 800 + 150;
 
 		if (serviceRef.current.length === 0) {
@@ -66,14 +71,20 @@ const DragMenu: React.FC<{
 		} else {
 			animateY(initialYPosition.current);
 		}
-		console.log(initialYPosition.current, maxYPosition.current, dragBorder.current);
+		console.log(
+			initialYPosition.current,
+			maxYPosition.current,
+			dragBorder.current
+		);
 	}, [selected_services]);
 
 	const containerResponder = useRef(
 		PanResponder.create({
 			onStartShouldSetPanResponder: () => !isChildActive.current,
 			onPanResponderGrant: () => {
-				translateY.setOffset(Math.max(translateY._value, initialYPosition.current));
+				translateY.setOffset(
+					Math.max(translateY._value, initialYPosition.current)
+				);
 				translateY.setValue(0);
 			},
 			onPanResponderMove: (event, gestureState) => {
@@ -196,7 +207,11 @@ const DragMenu: React.FC<{
 					<Pressable>
 						<Image
 							source={service.image}
-							style={{ height: "100%", width: "100%", opacity: 1 }}
+							style={{
+								height: "100%",
+								width: "100%",
+								opacity: 1,
+							}}
 							contentFit='contain'
 							placeholder={require("../assets/animations/loading3.gif")}
 							placeholderContentFit='contain'
@@ -266,6 +281,7 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.5,
 		shadowRadius: 5,
+		elevation: 3,
 	},
 	serviceBox: {
 		margin: 10,
@@ -300,6 +316,7 @@ const styles = StyleSheet.create({
 		borderTopColor: "transparent",
 		borderStyle: "solid",
 		padding: 10,
+		elevation: 3,
 	},
 	text: {
 		color: "white",
