@@ -5,7 +5,7 @@ export async function registerForPushNotificationsAsync() {
 	if (Platform.OS === "android") {
 		await Notifications.setNotificationChannelAsync("default", {
 			name: "default",
-			importance: Notifications.AndroidImportance.MIN,
+			importance: Notifications.AndroidImportance.MAX,
 			vibrationPattern: [0, 250, 250, 250],
 			lightColor: "#FF231F7C",
 		});
@@ -68,15 +68,15 @@ export async function schedulePushNotification(
 
 	const testDate = new Date(today.getTime() + 10000);
 
-	// console.log("attempting to schedule test notification");
-	// testStatus = await Notifications.scheduleNotificationAsync({
-	// 	content: {
-	// 		title: titles[0],
-	// 		body: bodies[0],
-	// 	},
-	// 	trigger: { date: testDate }, // Schedule in 10 seconds
-	// });
-	// console.log("test notification scheduled with status", testStatus);
+	console.log("attempting to schedule test notification");
+	testStatus = await Notifications.scheduleNotificationAsync({
+		content: {
+			title: titles[0],
+			body: bodies[0],
+		},
+		trigger: { date: testDate }, // Schedule in 10 seconds
+	});
+	console.log("test notification scheduled with status", testStatus);
 
 	if (periodDate > today) {
 		await Notifications.scheduleNotificationAsync({
