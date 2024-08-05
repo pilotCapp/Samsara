@@ -36,15 +36,17 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
 				const result = await registerBackgroundFetchAsync();
 				console.log("Background fetch registered with result:", result);
 				return;
-			}
-			else{
+			} else {
+				console.log(
+					"bacground task is not registered in the global scope... redoing"
+				);
 				TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
 					const now = Date.now();
-				
+
 					console.log(
 						`Got background fetch call at date: ${new Date(now).toISOString()}`
 					);
-				
+
 					return await updateStateFile();
 				});
 				const result = await registerBackgroundFetchAsync();
@@ -159,7 +161,7 @@ async function registerBackgroundFetchAsync() {
 	const status = await BackgroundFetch.registerTaskAsync(
 		BACKGROUND_FETCH_TASK,
 		{
-			minimumInterval: 15 * 60, // 15 minutes
+			minimumInterval: 60 * 60 * 12, // check twice a day
 			stopOnTerminate: false, // Whether to stop background fetch on app termination
 			startOnBoot: true, // Whether to start background fetch on device boot
 			enableHeadless: true, // Whether to run the task even if the app is not running

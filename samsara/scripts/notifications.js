@@ -35,10 +35,11 @@ export async function schedulePushNotification(
 ) {
 	const today = new Date();
 
-	let dayBefore = new Date(date);
-	dayBefore.setDate(date.getDate() - 1);
-	let weekBefore = new Date(date);
-	weekBefore.setDate(date.getDate() - 7);
+	const periodDate = new Date(date);
+	let dayBefore = new Date(periodDate);
+	dayBefore.setDate(periodDate.getDate() - 1);
+	let weekBefore = new Date(periodDate);
+	weekBefore.setDate(periodDate.getDate() - 7);
 
 	const titles =
 		current_service == next_service
@@ -67,14 +68,25 @@ export async function schedulePushNotification(
 
 	const testDate = new Date(today.getTime() + 10000);
 
-	if (date > today) {
+	// console.log("attempting to schedule test notification");
+	// testStatus = await Notifications.scheduleNotificationAsync({
+	// 	content: {
+	// 		title: titles[0],
+	// 		body: bodies[0],
+	// 	},
+	// 	trigger: { date: testDate }, // Schedule in 10 seconds
+	// });
+	// console.log("test notification scheduled with status", testStatus);
+
+	if (periodDate > today) {
 		await Notifications.scheduleNotificationAsync({
 			content: {
 				title: titles[0],
 				body: bodies[0],
 			},
-			trigger: { date: date }, // Schedule for the date
+			trigger: { date: periodDate }, // Schedule for the date
 		});
+
 		if (dayBefore > today) {
 			await Notifications.scheduleNotificationAsync({
 				content: {
@@ -93,7 +105,9 @@ export async function schedulePushNotification(
 				});
 			}
 		}
+		return "success";
 	}
+	return "failure";
 }
 
 export async function cancelAllScheduledNotifications() {
@@ -106,12 +120,16 @@ export async function alterPushNotifications(
 	next_service
 ) {
 	await cancelAllScheduledNotifications();
-	await schedulePushNotification(date, current_service, next_service);
-	const scheduledNotifications =
-		await Notifications.getAllScheduledNotificationsAsync();
+	const notificationSatus = await schedulePushNotification(
+		date,
+		current_service,
+		next_service
+	);
+	console.log("notifications scheduled with status", notificationSatus);
 }
 
-export async function getNotificationPermissions(){
-	const permission =  await Notification.getPermissionsAsync();
+export async function getNotificationPermissions() {
+	console.log("getting notification permissions");
+	const permission = await Notification.getPermissionsAsync();
 	return permission.status;
 }

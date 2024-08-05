@@ -30,7 +30,11 @@
 				"backgroundColor": "#ffffff"
 			},
 			"permissions": ["RECEIVE_BOOT_COMPLETED"],
-			"package": "com.samsara"
+			"package": "com.samsara",
+			"notification": {
+				"icon": "./assets/images/android_notification_icon.png",
+				"color": "#FFFFFF"
+			  }
 		},
 		"web": {
 			"bundler": "metro",
