@@ -1,9 +1,4 @@
-import {
-	View,
-	StyleSheet,
-	Dimensions,
-	Animated,
-} from "react-native";
+import { View, StyleSheet, Dimensions, Animated } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 
 import { Service, DataItem } from "@/types";
@@ -40,7 +35,6 @@ const SamsaraWheel: React.FC<{
 	);
 
 	async function initiallizeData() {
-
 		const newData: DataItem[] = selected_services.map((key) => ({
 			y: 100 / selected_services.length,
 			x: services[key].name,
@@ -188,7 +182,7 @@ const SamsaraWheel: React.FC<{
 							radius - 30 - (datum.selected ? radius * 0.09 : 0)
 						}
 						labelRadius={({ datum }) =>
-							radius - 60 - (datum.selected ? radius * 0.09 : 0)-radius/12
+							radius - 60 - (datum.selected ? radius * 0.09 : 0) - radius / 12
 						}
 						labelPlacement={"perpendicular"}
 						style={{
@@ -210,6 +204,7 @@ const SamsaraWheel: React.FC<{
 									index === 0 ? "white" : "none",
 								strokeWidth: 3,
 								strokeOpacity: 0.5,
+								elevation: 6,
 							} as any,
 						}}
 						padAngle={3}

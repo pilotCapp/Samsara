@@ -50,6 +50,7 @@ const HelpButton = () => {
 					style={{
 						height: "90%",
 						width: "90%",
+						elevation: 6,
 					}}
 					contentFit='contain'
 					placeholderContentFit='contain'

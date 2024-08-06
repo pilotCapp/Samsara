@@ -121,6 +121,7 @@ const EditComponents: React.FC<{
 								borderColor: "black",
 								opacity: edit_index === index ? 1 : 0,
 								pointerEvents: edit_index === index ? "auto" : "none",
+								elevation: 6,
 							}}>
 							<View
 								style={{

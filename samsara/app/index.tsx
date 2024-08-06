@@ -375,6 +375,7 @@ export default function Page() {
 									},
 									shadowOpacity: 0.5,
 									shadowRadius: 5,
+									elevation: 3,
 								}}>
 								<Image
 									source={selected_service_data[1].image}

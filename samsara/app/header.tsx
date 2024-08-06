@@ -137,6 +137,7 @@ const Header = ({
 						},
 						shadowOpacity: notification_usestate ? 0.5 : 0,
 						shadowRadius: 5,
+						elevation: notification_usestate ? 6 : 3,
 					}}>
 					<Image
 						style={{

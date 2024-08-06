@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { Image } from "expo-image";
 
-
 const DateLine: React.FC<{
 	radius: number;
 	periodUsestate: [Date, React.Dispatch<React.SetStateAction<Date>>];
