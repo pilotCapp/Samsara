@@ -75,7 +75,6 @@ const saveStateToFile = async (state) => {
 const updateStateFile = async () => {
 	try {
 		const fileInfo = await FileSystem.getInfoAsync(fileUri);
-		console.log(fileUri);
 		if (!fileInfo.exists) {
 			console.log("File does not exist, background task will not run");
 			return BackgroundFetch.BackgroundFetchResult.Failed;

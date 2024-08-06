@@ -14,7 +14,7 @@ import HelpButton from "@/components/Help";
 import registerBackgroundFetchAsync from "@/scripts/background";
 console.log("background fetch import", registerBackgroundFetchAsync);
 
-SplashScreen.preventAutoHideAsync(); //needs to be tested
+SplashScreen.preventAutoHideAsync();
 
 import {
 	alterPushNotifications,
@@ -27,7 +27,6 @@ import { useFonts } from "expo-font";
 
 export default function Page() {
 	const fileUri = FileSystem.documentDirectory + "state.json";
-	//console.log(fileUri);
 
 	const [loaded, setLoaded] = useState(false);
 
@@ -60,6 +59,7 @@ export default function Page() {
 
 	useEffect(() => {
 		loadStateFromFile();
+		setLoaded(true);
 	}, []);
 
 	async function initializeNotifications() {
@@ -70,7 +70,6 @@ export default function Page() {
 		} else {
 			setNotificationPermission(true);
 		}
-		setLoaded(true);
 		return status;
 	}
 
@@ -174,7 +173,6 @@ export default function Page() {
 		if (timedifference < 0 || timedifference > 32 * (1000 * 60 * 60 * 24)) {
 			setEnd_period(new Date(Date.now() + 1000 * 60 * 60 * 24 * 30));
 			console.log("date is invalid, resetting to 30 days from now");
-			throw new Error("notify that saved error is invalid for bug detection"); //remove for production?
 		} else if (!selected_services.includes(init_services[0])) {
 			const newState = {
 				end_period: end_period, // Use current date for initial state
@@ -222,7 +220,6 @@ export default function Page() {
 
 				const currentDate = new Date();
 
-				// Step 2: Add 30 days
 				const futureDate = new Date();
 				futureDate.setDate(currentDate.getDate() + 30);
 				futureDate.setHours(23, 59, 59, 999);
@@ -238,10 +235,6 @@ export default function Page() {
 				setEnd_period(new Date(defaultState.end_period));
 				setSelected_services(defaultState.selected_services);
 				setNotifications(defaultState.notifications);
-
-				//create bacground fetch upon file creation
-				//const status = await initBackgroundFetch();
-				//console.log("background fetch created with status", status);
 
 				return;
 			}

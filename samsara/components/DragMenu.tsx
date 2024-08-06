@@ -71,11 +71,6 @@ const DragMenu: React.FC<{
 		} else {
 			animateY(initialYPosition.current);
 		}
-		console.log(
-			initialYPosition.current,
-			maxYPosition.current,
-			dragBorder.current
-		);
 	}, [selected_services]);
 
 	const containerResponder = useRef(
@@ -162,7 +157,7 @@ const DragMenu: React.FC<{
 					gestureState.moveY > dragBorder.current &&
 					!selected_services.includes(serviceKey)
 				) {
-					setSelected_services((prevData) => [...prevData, serviceKey]); // Update selected_services correctly
+					setSelected_services((prevData) => [...prevData, serviceKey]);
 					angleUsestate[1](0);
 				} else {
 					Animated.timing(pan, {

@@ -66,18 +66,6 @@ export async function schedulePushNotification(
 					`If you plan to change subscription to ${next_service} there is no point in waiting. Remember to turn of further notices in the app after you have made the change`,
 			  ];
 
-	const testDate = new Date(today.getTime() + 10000);
-
-	console.log("attempting to schedule test notification");
-	testStatus = await Notifications.scheduleNotificationAsync({
-		content: {
-			title: titles[0],
-			body: bodies[0],
-		},
-		trigger: { date: testDate }, // Schedule in 10 seconds
-	});
-	console.log("test notification scheduled with status", testStatus);
-
 	if (periodDate > today) {
 		await Notifications.scheduleNotificationAsync({
 			content: {

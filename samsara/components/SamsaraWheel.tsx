@@ -106,32 +106,6 @@ const SamsaraWheel: React.FC<{
 		setEdit_index(null);
 	}, [selected_services]);
 
-	const sectionSelectione2 = (name: string) => {
-		const startTime = performance.now();
-
-		setData((prevData) => {
-			let hasChanged = false;
-
-			const newData = prevData.map((item) => {
-				if (item.x === name) {
-					hasChanged = true;
-					return { ...item, selected: !item.selected };
-				}
-				if (item.selected) {
-					hasChanged = true;
-					return { ...item, selected: false };
-				}
-				return item;
-			});
-
-			return hasChanged ? newData : prevData;
-		});
-
-		const endTime = performance.now();
-		const elapsedTime = endTime - startTime;
-
-		console.log(`Function 1 took ${elapsedTime} milliseconds`);
-	};
 
 	function sectionSelection(name: string, index: number) {
 		setData((prevData) =>
