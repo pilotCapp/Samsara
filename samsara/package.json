@@ -44,7 +44,8 @@
     "react-native-web": "~0.19.10",
     "ts-jest": "^29.1.5",
     "tslint": "^6.1.3",
-    "victory-native": "^37.0.3-next.0"
+    "victory-native": "^37.0.3-next.0",
+    "expo-updates": "~0.25.21"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
