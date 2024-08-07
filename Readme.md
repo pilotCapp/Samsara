@@ -24,8 +24,8 @@ The result is a seemingly simple application with a barebones of functional comp
 
 Furthermore there are some more or less advanced backend logic for creating notifications and updating state twice a day using backend fetch. This seems simple enough, but remembering there are different api´s for the different operating systems, I was surprised how well it worked. Unfortunately these backend functions have not been tested well enough on real devices over time, and could prove to make the application useless when in production, but I am optimistic.  
 ![Demo picture 1](./Demo-files/demo-Disney.png)
-![Demo picture 2](./Demo-files/to/demo-Max.png)
-![Demo picture 3](./Demo-files/to/demo-dragbox.png)
+![Demo picture 2](./Demo-files/demo-Max.png)
+![Demo picture 3](./Demo-files/demo-dragbox.png)
 ![Demo picture 4](./Demo-files/demo-tutorial.png)
 
 ## Testing
