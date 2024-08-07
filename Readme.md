@@ -23,7 +23,8 @@ Furthermore I also found out app development is no easy task, especially for mul
 The result is a seemingly simple application with a barebones of functional components. However if I do say so myself none of those functions were simple, and I took the care of going the extra mile creating the most user friendly interfaces I could think of, even if they were far more complex. Some example of this is a dragbox containing multiple sub-dragboxes, or a circular-draggable component resembling a watch hand, that would calculate dates from angular radians, and vice-versa. There are also many animations and shadow styling functionalities, that was maticulus to get right.
 
 Furthermore there are some more or less advanced backend logic for creating notifications and updating state twice a day using backend fetch. This seems simple enough, but remembering there are different api´s for the different operating systems, I was surprised how well it worked. Unfortunately these backend functions have not been tested well enough on real devices over time, and could prove to make the application useless when in production, but I am optimistic.
-<div style="display: flex; flex-direction: row; align-items: center;">
+
+<div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; width: 600;">
 <img src="./Demo-files/demo-Disney.png" alt="Demo Screenshot" width="100">
 <img src="./Demo-files/demo-Max.png" alt="Demo Screenshot" width="100">
 <img src="./Demo-files/demo-dragbox.png" alt="Demo Screenshot" width="100">
