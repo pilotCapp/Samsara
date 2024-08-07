@@ -43,9 +43,6 @@ For ios I was planning on getting the developer account to publish my applicatio
 
 I am glad I took on this project, I have learned a lot, not only about app development but about creating production level code. Also I have managed to test my skillset and patience on tough development challenges, and proven to myself that I manage to do projects requiring such different kinds of skillsets, with nothing but myself pushing for a better product, and a better self. It is therefore extra sweet when I am genuinly proud of my product. It is near perfect, and far better than I would have ever dreamed I would be able to create when I set out.
 
-<video width="320" height="240" controls>
-  <source src="./Demo-files/subdub_demo_low-res.MOV" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+https://github.com/user-attachments/assets/551e6c68-b2a0-4f56-82f6-72fa7790ee54
 
 [Link to higher resolution video](./Demo-files/subdub_demo_high-res.MP4)
